@@ -173,7 +173,7 @@ async function validateAndSubmit() {
         console.log(pair[0]+ ': ' + pair[1]); 
       }
 
-      const response = await axios.post('http://192.168.1.32:8080/GreenGuard/save', formData, {
+      const response = await axios.post('http://192.168.1.14:8080/GreenGuard/save', formData, {
   //       headers: {
   //   'Content-Type': 'multipart/form-data'
   // }

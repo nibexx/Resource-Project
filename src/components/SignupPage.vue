@@ -239,7 +239,7 @@ export default {
   try {
     if (this.$refs.form.validate()) {
       console.log("going to backend");
-      const response = await axios.post('http://192.168.1.41:8080/UserReg/reg', {
+      const response = await axios.post('http://192.168.1.14:8080/UserReg/reg', {
         "name": this.first,
         "email": this.email,
         "password": this.password

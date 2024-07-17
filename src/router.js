@@ -125,6 +125,12 @@ const routes = [
     path: '/edit-page',
     component: () => import('./components/EditPage.vue')
   },
+    {       path: '/terms-conditions',
+       component: () => import('./components/TermsAndConditions.vue'),
+    },
+    {       path: '/locations',
+      component: () => import('./components/AllLocations.vue'),
+   },
   {
     path: '/map-page',
     // component: LocationManager,

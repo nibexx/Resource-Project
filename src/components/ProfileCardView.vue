@@ -411,7 +411,7 @@ export default {
   methods: {
     async fetchCards() {
       try {
-        const response = await axios.get('http://192.168.1.9:8080/UserReg/login', {
+        const response = await axios.get('http://192.168.1.14:8080/UserReg/login', {
           params: { email: this.userEmail }
         });
         if (response.status >= 200 && response.status < 300) {
@@ -430,7 +430,7 @@ export default {
     },
     async deleteCard(cardId) {
       try {
-        await axios.delete(`http://192.168.1.9:8080/UserReg/login/${cardId}`);
+        await axios.delete(`http://192.168.1.14:8080/UserReg/login/${cardId}`);
         this.cards = this.cards.filter(card => card.id !== cardId);
       } catch (error) {
         console.error('Error deleting card:', error);
@@ -455,7 +455,7 @@ export default {
     },
     async updateCard() {
       try {
-        const response = await axios.put(`http://192.168.1.9:8080/UserReg/login/${this.selectedCard.id}`, this.editedCard);
+        const response = await axios.put(`http://192.168.1.14:8080/UserReg/login/${this.selectedCard.id}`, this.editedCard);
         const index = this.cards.findIndex(card => card.id === this.selectedCard.id);
         if (index !== -1) {
           this.cards[index] = response.data;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isFlag" id="map-container">
+  <div id="map-container">
     <div class="search-bar me-4">
       <input v-model="searchQuery" @keyup.enter="searchLocation" placeholder="Search for a place" />
       <button class="search-button" @click="searchLocation">Search</button>
@@ -25,14 +25,13 @@
         </LPopup>
       </LMarker>
     </LMap>
-    <button class="upload-button" :disabled="!locationConfirmed" @click="uploadResource"> + Upload</button>
+    <button class="upload-button" :disabled="!locationConfirmed" @click="handle"> + Upload</button>
   </div>
 </template>
 
 <script>
-import { ref, watch,computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useStore } from 'vuex';
-// import { useRouter } from 'vue-router';
 import { LMap, LTileLayer, LMarker, LPopup } from 'vue3-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
@@ -44,10 +43,8 @@ export default {
     LMarker,
     LPopup
   },
-  setup() {
+  setup(_, { emit }) {
     const store = useStore();
-    // const router = useRouter();
-
     const zoom = ref(20);
     const center = ref([9.4981, 76.3388]);
     const searchQuery = ref('');
@@ -59,13 +56,11 @@ export default {
 
     watch(isFlag, (newValue) => {
       if (!newValue) {
-        // Close the component or reset its state
         resetComponentState();
       }
     });
 
     const resetComponentState = () => {
-      // Reset all component state variables here
       searchQuery.value = '';
       markerPosition.value = null;
       locationConfirmed.value = false;
@@ -104,10 +99,15 @@ export default {
       infoWindowText.value = '';
     };
 
-
-    const uploadResource = () => {
-  store.commit('setFlag', false); // Set isFlag to false in Vuex store
-};
+    const handle = () => {
+      if (locationConfirmed.value) {
+        const location = {
+          lat: markerPosition.value.lat,
+          lng: markerPosition.value.lng
+        };
+        emit('back', location);
+      }
+    };
 
     return {
       zoom,
@@ -120,11 +120,12 @@ export default {
       cancelLocation,
       infoWindowText,
       locationConfirmed,
-      uploadResource
+      handle
     };
   }
 };
 </script>
+
 
 <style>
 .autocomplete-list {

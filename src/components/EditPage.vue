@@ -137,7 +137,7 @@ export default {
           requestData.password = this.newPassword;
         }
 
-        const response = await axios.put(`http://192.168.1.9:8080/GreenGuard/edit/${this.userId}`, requestData);
+        const response = await axios.put(`http://192.168.1.14:8080/GreenGuard/edit/${this.userId}`, requestData);
 
         if (response.status === 200) {
           this.$store.dispatch('updateUser', {
@@ -152,7 +152,7 @@ export default {
     },
     async confirmDelete() {
       try {
-        const response = await axios.delete(`http://192.168.1.9:8080/GreenGuard/delete/${this.userId}`);
+        const response = await axios.delete(`http://192.168.1.14:8080/GreenGuard/delete/${this.userId}`);
         if (response.status === 200) {
           this.$router.push('/');
         }

@@ -12,7 +12,7 @@ const store = createStore({
           isAuthenticated: false,
           lat : '',
           lng : '',
-          // isFlag : false
+          isFlag : false,
         }
     },
     mutations: {
