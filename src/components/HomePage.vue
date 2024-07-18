@@ -2,7 +2,7 @@
   <section class="showcase" :class="{ active: isActive }">
     <header>
       <div class="logo-container">
-        <h2 class="logo">Natural </h2>
+        <h2 class="logo">Green Guard </h2>
       </div>
       <div class="buttons">
         <button class="white-border" @click="toSign">Sign In</button>
