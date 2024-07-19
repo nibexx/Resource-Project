@@ -775,7 +775,7 @@ export default {
         </div>
       </div>
     </div> 
-
+<br>
     <!-- Footer Component -->
      <footer-page ></footer-page>
   </div>
@@ -811,7 +811,7 @@ export default {
   methods: {
     async fetchCities() {
       try {
-        const response = await axios.get('http://192.168.1.9:8080/GreenGuard/getAll');
+        const response = await axios.get('http://192.168.1.19:8080/GreenGuard/getAll');
         console.log(response.data);
         this.cities = response.data;
       } catch (error) {

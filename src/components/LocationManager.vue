@@ -45,7 +45,7 @@ export default {
   },
   setup(_, { emit }) {
     const store = useStore();
-    const zoom = ref(20);
+    const zoom = ref(22);
     const center = ref([9.4981, 76.3388]);
     const searchQuery = ref('');
     const markerPosition = ref(null);
@@ -73,7 +73,7 @@ export default {
 
       if (results && results.length > 0) {
         center.value = [results[0].y, results[0].x];
-        zoom.value = 17;
+        zoom.value = 22;
       } else {
         alert('Location not found');
       }
