@@ -128,26 +128,36 @@ export default {
     },
     async updateProfile() {
       try {
-        let requestData = {
+        let profileData = {
           name: this.editUserName,
           email: this.editUserEmail,
         };
 
-        if (this.isChangingPassword && this.newPassword) {
-          requestData.password = this.newPassword;
-        }
+            // Data for updating the password
+      let passwordData = {
+      password: this.newPassword,
+    };
 
-        const response = await axios.put(`http://192.168.1.25:8080/UserReg/update/${this.userId}`, requestData);
+        const response = await axios.put(`http://192.168.1.25:8080/UserReg/update/${this.userId}`, profileData);
 
         if (response.status === 200) {
           this.$store.commit('setName', this.editUserName);
           this.$store.commit('setEmail',  this.editUserEmail);
-        
+        }
+           // If the password is being changed, update it
+    if (this.isChangingPassword && this.newPassword) {
+      const passwordResponse = await axios.put(`http://192.168.1.25:8080/UserReg/updatePassword/${this.userId}`, passwordData);
+
+      // Check if the password update was successful
+      if (passwordResponse.status === 200) {
+        console.log('Password updated successfully');
+      }
+    }
            
         
           console.log("going to store");
           this.closeEditProfile();
-        }
+        
       } catch (error) {
         console.error('Error updating profile:', error);
       }
