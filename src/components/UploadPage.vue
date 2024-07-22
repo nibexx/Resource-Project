@@ -146,7 +146,7 @@ const v$ = useVuelidate(rules, state)
 function handleFileUpload(event) {
   const imgInput = event.target.files[0];
   state.fileName = imgInput.name; // Store the file name
-
+  
   const reader = new FileReader();
   reader.onload = () => {
     state.image = imgInput

@@ -131,15 +131,9 @@ const routes = [
    },
   {
     path: '/map-page',
-    // component: LocationManager,
-    // children: [
-    //   {
-    //     path: '',
-    //     name: 'map-page',
-    //     alias: '',
+ 
         component: () => import('./components/MapPage.vue'),
-    //   }
-    // ]
+
   },
   {
     path: '/upload-dummy',

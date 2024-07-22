@@ -137,13 +137,15 @@ export default {
           requestData.password = this.newPassword;
         }
 
-        const response = await axios.put(`http://192.168.1.19:8080/UserReg/update/${this.userId}`, requestData);
+        const response = await axios.put(`http://192.168.1.25:8080/UserReg/update/${this.userId}`, requestData);
 
         if (response.status === 200) {
-          this.$store.dispatch('updateUser', {
-            name: this.editUserName,
-            email: this.editUserEmail,
-          });
+          this.$store.commit('setName', this.editUserName);
+          this.$store.commit('setEmail',  this.editUserEmail);
+        
+           
+        
+          console.log("going to store");
           this.closeEditProfile();
         }
       } catch (error) {
@@ -151,16 +153,28 @@ export default {
       }
     },
     async confirmDelete() {
-      try {
-        const response = await axios.delete(`http://192.168.1.19:8080/GreenGuard/deleteGuardsByUserId/${this.userId}`);
-        console.log("btn clicked");
-        if (response.status === 200) {
-          this.$router.push('/');
-        }
-      } catch (error) {
-        console.error('Error deleting account:', error);
-      }
-    },
+  try {
+    const formData = new FormData();
+    formData.append('email', this.userEmail);
+
+    const response = await axios({
+      method: 'delete',
+      url: 'http://192.168.1.25:8080/GreenGuard/deleteByUserEmail',
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    console.log("btn clicked");
+    if (response.status === 200) {
+      this.$router.push('/');
+    }
+  } catch (error) {
+    console.error('Error deleting account:', error);
+  }
+}
+
+,
+
     confirmLogout() {
       this.$store.commit('setAuthenticated',false);
       this.$router.push('/');

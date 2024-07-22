@@ -17,13 +17,13 @@ const store = createStore({
     },
     mutations: {
         setId(state, payload){
-            state.id = payload;    
+            state.user.id = payload;    
          },
          setName(state, payload) {
-          state.name = payload;    
+          state.user.name = payload;    
        },
        setEmail(state, payload) {
-        state.email = payload;    
+        state.user.email = payload;    
      },
      setAuthenticated(state, payload) {
       state.isAuthenticated = payload;    
@@ -41,13 +41,13 @@ const store = createStore({
     },
     getters: {
         getId(state) {
-            return state.id;
+            return state.user.id;
           },
           getName(state) {
-            return state.name ;
+            return state.user.name ;
           },
           getEmail(state) {
-            return state.email;
+            return state.user.email;
           },
           getAuthenticated(state) {
             return state.isAuthenticated;
