@@ -6,7 +6,7 @@
           <h1>Profile Page</h1>
         </div>
         <div class="navbar-right">
-          <button class="upload-button me-5">+ Upload New</button>
+          <button class="upload-button">+ Upload New</button>
           <div class="user-info" @click="toggleSidebar">
             <i class="mdi mdi-account user-icon"></i>
             <span class="user-name">{{ firstName }}</span>
@@ -35,23 +35,48 @@
       </div>
 
       <div v-if="isEditProfileOpen" class="modal">
-        <div class="modal-content">
-          <span class="close-icon" @click="closeEditProfile">&times;</span>
-          <h2>Edit Profile</h2>
-          <form @submit.prevent="updateProfile">
-            <label for="username">Username:</label>
-            <input type="text" id="username" v-model="editUserName" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="editUserEmail" required>
-            <label for="password">Password:</label>
-            <input type="text" id="password" v-model="editUserPassword" required>
-            <button type="submit">Save Changes</button>
-          </form>
-        </div>
-      </div>
+    <div class="modal-content">
+      <span class="close-icon" @click="closeEditProfile">&times;</span>
+      <h2>Edit Profile</h2>
+      <form @submit.prevent="updateProfile">
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="editUserName" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" v-model="editUserEmail" required>
+        <button type="button" @click="changePassword" class="change-password-button ms-1 mb-3">Change Password</button>
+       
+        <div v-if="isChangingPassword" class="password-input">
+          <!-- Password input field with eye icon -->
+<div class="password-input">
+  <label for="newPassword">New Password:</label>
+  <div class="password-container">
+    <input
+      class="password-field"
+      :type="passwordVisible ? 'text' : 'password'"
+      id="newPassword"
+      v-model="newPassword"
+      :class="{ 'is-invalid': passwordLengthError }"
+      required
+      minlength="8"
+    />
+    <i
+      class="mdi"
+      :class="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+      @click="togglePasswordVisibility"
+    ></i>
+  </div>
+  <p v-if="passwordLengthError" class="error-text">Password must be at least 8 characters long.</p>
+</div>
 
-    <!-- Logout and deactivate popups -->
-        <div v-if="showLogoutModal" class="modal">
+         
+      </div>
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+      <!-- Logout and deactivate popups -->
+      <div v-if="showLogoutModal" class="modal">
         <div class="modal-content small-modal">
           <h2>Are you sure you want to logout?</h2>
           <button class="button-ok" @click="confirmLogout">OK</button>
@@ -66,35 +91,46 @@
         </div>
       </div>
     </div>
+    <ProfileCardView></ProfileCardView>
   </div>
-  <ProfileCardView-page></ProfileCardView-page>
 </template>
-
 <script>
 import ProfileCardView from './ProfileCardView.vue';
+import axios from 'axios';
 
 export default {
+  components: {
+    ProfileCardView
+  },
   data() {
     return {
-      components: {
-        ProfileCardView
-      },
       userImage: '@/assets/profileicon.jpg', // Replace with actual user image URL
-      userName: 'Shalvin Doe', // Replace with actual user name
-      userEmail: 'john.doe@example.com', // Replace with actual user email
-      userPassword: 234516772,
+      userPassword: '', // User password will be fetched from the backend
       isSidebarOpen: false,
       isEditProfileOpen: false,
       showLogoutModal: false,
       showDeleteModal: false,
       editUserName: '',
       editUserEmail: '',
-      editUserPassword: ''
+      editUserPassword: '',
+      isChangingPassword: false, // Add this line
+      newPassword: '', // Add this line to store the new password
+      passwordVisible: false, 
+      passwordLengthError: false,
     };
   },
   computed: {
     firstName() {
       return this.userName.split(' ')[0];
+    },
+    userId() {
+      return this.$store.getters.getId;
+    },
+    userName() {
+      return this.$store.getters.getName;
+    },
+    userEmail() {
+      return this.$store.getters.getEmail;
     }
   },
   methods: {
@@ -107,24 +143,100 @@ export default {
       this.editUserPassword = this.userPassword;
       this.isEditProfileOpen = true;
     },
+    togglePasswordVisibility() {
+      this.passwordVisible = !this.passwordVisible;
+    },
     closeEditProfile() {
       this.isEditProfileOpen = false;
     },
-    updateProfile() {
-      this.userName = this.editUserName;
-      this.userEmail = this.editUserEmail;
-      this.userPassword = this.editUserPassword;
-      this.closeEditProfile();
+     changePassword() {
+      this.isChangingPassword = true;
     },
-    confirmLogout() {
-      this.$router.push("/");
-    },
-    confirmDelete() {
-      this.$router.push("/delete-acc");
+    async updateProfile() {
+      try {
+        if (this.newPassword && this.newPassword.length < 8) {
+      this.passwordLengthError = true; // Show error if password is too short
+      return; // Prevent form submission if validation fails
+    } else {
+      this.passwordLengthError = false; // Clear error if password is valid
     }
+        let profileData = {
+          name: this.editUserName,
+          email: this.editUserEmail,
+        };
+
+            // Data for updating the password
+      let passwordData = {
+      password: this.newPassword,
+    };
+
+        const response = await axios.put(`http://192.168.1.25:8080/UserReg/update/${this.userId}`, profileData);
+
+        if (response.status === 200) {
+          this.$store.commit('setName', this.editUserName);
+          this.$store.commit('setEmail',  this.editUserEmail);
+        }
+           // If the password is being changed, update it
+    if (this.isChangingPassword && this.newPassword) {
+      const passwordResponse = await axios.put(`http://192.168.1.25:8080/UserReg/updatePassword/${this.userId}`, passwordData);
+
+      // Check if the password update was successful
+      if (passwordResponse.status === 200) {
+        console.log('Password updated successfully');
+      }
+    }
+           
+        
+          console.log("going to store");
+          this.closeEditProfile();
+        
+      } catch (error) {
+        console.error('Error updating profile:', error);
+      }
+    },
+    async confirmDelete() {
+  try {
+    const formData = new FormData();
+    formData.append('email', this.userEmail);
+
+    const response = await axios({
+      method: 'delete',
+      url: 'http://192.168.1.25:8080/GreenGuard/deleteByUserEmail',
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    console.log("btn clicked");
+    if (response.status === 200) {
+      this.$router.push('/');
+    }
+  } catch (error) {
+    console.error('Error deleting account:', error);
   }
+}
+
+,
+
+    confirmLogout() {
+      this.$store.commit('setAuthenticated',false);
+      this.$router.push('/');
+    }
+  },
+  // async mounted() {
+  //   try {
+  //     const response = await axios.get('http://192.168.1.9:8080/GreenGuard/save');
+  //     if (response.status === 200) {
+  //       const { name, email, password } = response.data;
+  //       this.$store.dispatch('setUser', { name, email });
+  //       this.userPassword = password; // Note: Usually, you don't fetch passwords directly like this for security reasons.
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching profile:', error);
+  //   }
+  // }
 };
 </script>
+
 
 <style scoped>
 .navbar {
@@ -154,7 +266,8 @@ export default {
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 85px;
+  margin-right: 155px;
+  
   transition: background-color 0.3s ease;
 }
 
@@ -440,6 +553,45 @@ export default {
   color: white;
   box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
 }
+.change-password-button{
+  margin-top: 5px;
+  width: 160px;
+  color: white;
+  background-color: green !important;
+}
+.password-container {
+  position: relative;
+}
+
+.password-field {
+  width: 370px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.password-field.is-invalid {
+  border-color: red;
+}
+
+.mdi-eye, .mdi-eye-off {
+  position: absolute;
+  right: 15px;
+  
+  top: 50%;
+  font-size: 34px; /* Increased size */
+  transform: translateY(-60%);
+ 
+  cursor: pointer;
+  z-index: 10; /* Ensures icon is above input field */
+}
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
 </style>
 
 

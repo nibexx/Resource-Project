@@ -94,6 +94,7 @@ export default {
       editUserPassword: '',
       isChangingPassword: false, // Add this line
       newPassword: '', // Add this line to store the new password
+      showPassword: false,
     };
   },
   computed: {
@@ -113,6 +114,9 @@ export default {
   methods: {
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     },
     openEditProfile() {
       this.editUserName = this.userName;

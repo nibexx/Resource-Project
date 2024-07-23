@@ -16,7 +16,7 @@ export default {
 
     const fetchMarkers = async () => {
       try {
-        const response = await axios.get('http://192.168.1.25:8080/GreenGuard/getAllImagesAndLocations'); 
+        const response = await axios.get('http://192.168.1.26:8080/GreenGuard/getAllImagesAndLocations'); 
         console.log(response.data); // Log the data to verify structure
         const markers = response.data; // Adjust based on your API response structure
 
