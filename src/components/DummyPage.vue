@@ -877,7 +877,7 @@ export default {
 <style scoped>
 #root {
   background-color: #8BC34A; 
-  background-image: url('~@/assets/background10.jpg'); /* Adjust path if necessary */
+  background-image: url('~@/assets/b2.jpg'); /* Adjust path if necessary */
   background-size: cover; /* Adjust to cover the entire container */
   background-position: center; /* Center the background image */
   min-height: 100vh; /*
@@ -932,7 +932,7 @@ export default {
   border-radius: 5px;
   width: 170px;
   color: white; /* Set text color */
-  background-color: black; /* Set background color */
+  background-color: rgba(0, 0, 0, 0.205); /* Set background color */
 }
 
 .category select option,
