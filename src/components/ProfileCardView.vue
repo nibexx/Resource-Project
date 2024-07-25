@@ -19,10 +19,10 @@
         <p>{{ card.district }}</p>
         <p>{{ truncateDescription(card.description, true) }}</p> Display truncated description
       </div>
-    </div> -->
+    </div> 
     
    
-    <!-- Edit Popup Modal 
+  
     <div v-if="showEditPopup" class="modal" @click.self="closeEditPopup">
       <div class="modal-content">
         <h2>Edit Card</h2>
@@ -322,13 +322,15 @@ export default {
   background-color: #5a6268;
 }
 </style> -->
-
-
-
+ 
 <template>
   <div id="app1" class="cards-container">
+    <div v-if="cards.length === 0" class="add-card-icon" @click="toUpload">
+      +
+    </div>
     <div v-for="card in cards" :key="card.title" class="card me-2 ms-2 mb-3">
-      <img class="card-image" :src="card.image" :alt="card.title" />
+      <img :src="'data:image/jpeg;base64,'+card.image" :width="360.92" :height="200" />
+      <!-- <img class="card-image" :src="card.image" :alt="card.title" /> -->
       <div class="card-content">
         <div class="card-header">
           <h2 class="card-title">{{ card.title }}</h2>
@@ -348,13 +350,13 @@ export default {
       </div>
     </div>
 
-    <!-- Edit Popup Modal -->
+    
     <div v-if="showEditPopup" class="modal" @click.self="closeEditPopup">
       <div class="modal-content">
         <h2>Edit Card</h2>
         <form @submit.prevent="saveChanges">
           <label>Title:</label>
-          <input type="text" v-model="editedCard.title" required>
+          <input type="text" v-model="editedCard.title" >
           
           <label>Category:</label>
           <input type="text" v-model="editedCard.category" required>
@@ -403,7 +405,243 @@ export default {
   computed: {
     userEmail() {
       return this.$store.getters.getEmail;
+    },
+    userId() {
+      return this.$store.getters.getId;
+    },
+    userName(){
+      return this.$store.getters.getName;
     }
+  },
+  mounted() {
+    this.fetchCards();
+  },
+  methods: {
+  async fetchCards() {
+    try {
+      const response = await axios.get(`http://192.168.1.26:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
+      if (response.status >= 200 && response.status < 300) {
+        console.log('backendResponse', response.data);
+        this.cards = response.data;
+      }
+    } catch (error) {
+      console.error('Error fetching cards:', error);
+    }
+  },
+  editCard(card) {
+    this.selectedCard = card;
+    this.editedCard = { ...card };
+    this.showEditPopup = true;
+  },
+  async deleteCard(cardId) {
+    try {
+      await axios.delete(`http://192.168.1.26:8080/GreenGuard/delete/${cardId}`);
+      this.cards = this.cards.filter(card => card.id !== cardId);
+    } catch (error) {
+      console.error('Error deleting card:', error);
+    }
+  },
+  async saveChanges() {
+    try {
+      const formData = new FormData();
+      formData.append('saverName', this.userName); // Assuming 'title' maps to 'saverName'
+      formData.append('category', this.editedCard.category);
+      formData.append('description', this.editedCard.description);
+      formData.append('latitude', this.editedCard.latitude); // Add latitude if required
+      formData.append('longitude', this.editedCard.longitude); // Add longitude if required
+      formData.append('district', this.editedCard.district);
+
+      if (this.editedCard.image instanceof File) {
+        formData.append('imageFile', this.editedCard.image);
+      }
+
+      await this.updateCard(formData);
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    }
+    this.closeEditPopup();
+  },
+  async updateCard(formData) {
+    try {
+      const response = await axios.put(`http://192.168.1.26:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const index = this.cards.findIndex(card => card.id === this.selectedCard.id);
+      if (index !== -1) {
+        this.cards[index] = response.data;
+      }
+    } catch (error) {
+      console.error('Error updating card:', error);
+    }
+  },
+  previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreviewUrl = reader.result;
+        this.editedCard.image = file;
+      };
+      reader.readAsDataURL(file);
+    }
+  },
+  closeEditPopup() {
+    this.showEditPopup = false;
+    this.selectedCard = null;
+    this.editedCard = {
+      title: '',
+      category: '',
+      district: '',
+      description: '',
+      image: null,
+    };
+    this.imagePreviewUrl = null;
+  },
+  truncateDescription(description, truncate) {
+    if (truncate) {
+      return description.split(' ').slice(0, 14).join(' ') + (description.split(' ').length > 14 ? '...' : '');
+    } else {
+      return description;
+    }
+  }
+},
+toUpload(){
+  this.$router.push('upload-new');
+}
+
+  // methods: {
+  //   async fetchCards() {
+  // try {
+  //   const response = await axios.get(`http://192.168.1.26:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
+  //   if (response.status >= 200 && response.status < 300) {
+  //     console.log('backendResponse', response.data);
+  //     this.cards = response.data;
+  //   }
+  //     } catch (error) {
+  //       console.error('Error fetching cards:', error);
+  //     }
+  //   },
+  //   editCard(card) {
+  //     this.selectedCard = card;
+  //     this.editedCard = { ...card };
+  //     this.showEditPopup = true;
+  //   },
+  //   async deleteCard(cardId) {
+  //     try {
+  //       await axios.delete(`http://192.168.1.26:8080/UserReg/login/${cardId}`);
+  //       this.cards = this.cards.filter(card => card.id !== cardId);
+  //     } catch (error) {
+  //       console.error('Error deleting card:', error);
+  //     }
+  //   },
+  //   async saveChanges() {
+  //     try {
+  //       const formData = new FormData();
+  //       formData.append('title', this.editedCard.title);
+  //       formData.append('category', this.editedCard.category);
+  //       formData.append('district', this.editedCard.district);
+  //       formData.append('description', this.editedCard.description);
+
+  //       if (this.editedCard.image instanceof File) {
+  //         formData.append('image', this.editedCard.image);
+  //       }
+
+  //       await this.updateCard(formData);
+  //     } catch (error) {
+  //       console.error('Error saving changes:', error);
+  //     }
+  //     this.closeEditPopup();
+  //   },
+    // async saveChanges() {3
+    //   try {
+    //     if (this.editedCard.image instanceof File) {
+    //       const reader = new FileReader();
+    //       reader.onload = async () => {
+    //         this.editedCard.image = reader.result;
+    //         await this.updateCard();
+    //       };
+    //       reader.readAsDataURL(this.editedCard.image);
+    //     } else {
+    //       await this.updateCard();
+    //     }
+    //   } catch (error) {
+    //     console.error('Error saving changes:', error);
+    //   }
+    //   this.closeEditPopup();
+    // },
+  //   async updateCard() {
+  //     try {
+  //       const response = await axios.put(`http://192.168.1.26:8080/GreenGuard/edit/${this.selectedCard.id}`, this.editedCard);
+  //       const index = this.cards.findIndex(card => card.id === this.selectedCard.id);
+  //       if (index !== -1) {
+  //         this.cards[index] = response.data;
+  //       }
+  //     } catch (error) {
+  //       console.error('Error updating card:', error);
+  //     }
+  //   },
+  //   previewImage(event) {
+  //     const file = event.target.files[0];
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onload = () => {
+  //         this.imagePreviewUrl = reader.result;
+  //         this.editedCard.image = file;
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   },
+  //   closeEditPopup() {
+  //     this.showEditPopup = false;
+  //     this.selectedCard = null;
+  //     this.editedCard = {
+  //       title: '',
+  //       category: '',
+  //       district: '',
+  //       description: '',
+  //       image: null,
+  //     };
+  //     this.imagePreviewUrl = null;
+  //   },
+  //   truncateDescription(description, truncate) {
+  //     if (truncate) {
+  //       return description.split(' ').slice(0, 14).join(' ') + (description.split(' ').length > 14 ? '...' : '');
+  //     } else {
+  //       return description;
+  //     }
+  //   }
+  // }
+  
+};
+</script> 
+<!-- <script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      cards: [],
+      showEditPopup: false,
+      selectedCard: null,
+      editedCard: {
+        title: '',
+        category: '',
+        district: '',
+        description: '',
+        image: null,
+      },
+      imagePreviewUrl: null,
+    };
+  },
+  computed: {
+    userEmail() {
+      return this.$store.getters.getEmail;
+    },
+    userId() {
+      return this.$store.getters.getId;
+    },
   },
   mounted() {
     this.fetchCards();
@@ -411,13 +649,12 @@ export default {
   methods: {
     async fetchCards() {
       try {
-        const response = await axios.get('http://192.168.1.19:8080/get', {
-          params: { user: this.userEmail }
+        const response = await axios.get('http://192.168.1.26:8080/get', {
+          params: { id: this.userId }
         });
         if (response.status >= 200 && response.status < 300) {
-          console.log('backendResponse',response.data);
-        this.cards = response.data;
-        
+          console.log('backendResponse', response.data);
+          this.cards = response.data;
         }
       } catch (error) {
         console.error('Error fetching cards:', error);
@@ -430,7 +667,7 @@ export default {
     },
     async deleteCard(cardId) {
       try {
-        await axios.delete(`http://192.168.1.19:8080/UserReg/login/${cardId}`);
+        await axios.delete(`http://192.168.1.26:8080/UserReg/login/${cardId}`);
         this.cards = this.cards.filter(card => card.id !== cardId);
       } catch (error) {
         console.error('Error deleting card:', error);
@@ -455,7 +692,7 @@ export default {
     },
     async updateCard() {
       try {
-        const response = await axios.put(`http://192.168.1.19:8080/UserReg/login/${this.selectedCard.id}`, this.editedCard);
+        const response = await axios.put(`http://192.168.1.26:8080/UserReg/login/${this.selectedCard.id}`, this.editedCard);
         const index = this.cards.findIndex(card => card.id === this.selectedCard.id);
         if (index !== -1) {
           this.cards[index] = response.data;
@@ -496,7 +733,7 @@ export default {
     }
   }
 };
-</script>
+</script> -->
 
 <style scoped>
 .cards-container {
@@ -530,6 +767,7 @@ export default {
   flex-direction: column;
   flex-grow: 1;
   justify-content: space-between;
+  color: black;
 }
 
 .card-header {
@@ -541,7 +779,7 @@ export default {
 .card-title {
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
+  color: black; 
 }
 
 .title-divider {
@@ -552,6 +790,7 @@ export default {
 
 .card-content p {
   margin: 5px 0;
+  color: black;
 }
 
 .action-icons {
@@ -648,4 +887,26 @@ export default {
 .modal-buttons button[type="button"]:hover {
   background-color: #5a6268;
 }
-</style>
+/* Style for the + icon */
+.add-card-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background-color: rgb(22, 127, 22);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  cursor: pointer;
+}
+
+.add-card-icon:hover {
+  background-color: rgb(14, 83, 14);
+  color: white;
+}
+</style>  

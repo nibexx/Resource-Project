@@ -6,7 +6,7 @@
           <h1>Profile Page</h1>
         </div>
         <div class="navbar-right">
-          <button class="upload-button">+ Upload New</button>
+          <button class="upload-button" @click="toUpload">+ Upload New</button>
           <div class="user-info" @click="toggleSidebar">
             <i class="mdi mdi-account user-icon"></i>
             <span class="user-name">{{ firstName }}</span>
@@ -137,6 +137,9 @@ export default {
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
+    toUpload(){
+      this.$router.push('/upload-new');
+    },
     openEditProfile() {
       this.editUserName = this.userName;
       this.editUserEmail = this.userEmail;
@@ -170,7 +173,7 @@ export default {
       password: this.newPassword,
     };
 
-        const response = await axios.put(`http://192.168.1.25:8080/UserReg/update/${this.userId}`, profileData);
+        const response = await axios.put(`http://192.168.1.26:8080/UserReg/update/${this.userId}`, profileData);
 
         if (response.status === 200) {
           this.$store.commit('setName', this.editUserName);
@@ -178,7 +181,7 @@ export default {
         }
            // If the password is being changed, update it
     if (this.isChangingPassword && this.newPassword) {
-      const passwordResponse = await axios.put(`http://192.168.1.25:8080/UserReg/updatePassword/${this.userId}`, passwordData);
+      const passwordResponse = await axios.put(`http://192.168.1.26:8080/UserReg/updatePassword/${this.userId}`, passwordData);
 
       // Check if the password update was successful
       if (passwordResponse.status === 200) {
@@ -201,7 +204,7 @@ export default {
 
     const response = await axios({
       method: 'delete',
-      url: 'http://192.168.1.25:8080/GreenGuard/deleteByUserEmail',
+      url: 'http://192.168.1.26:8080/GreenGuard/deleteByUserEmail',
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     });

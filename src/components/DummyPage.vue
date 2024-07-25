@@ -740,7 +740,26 @@ export default {
     <div class="card-container mb-3" v-motion-fade-visible>
       <div class="card" v-for="(city, index) in cities" :key="index" :class="{ 'is-flipped': city.showDetails }" @click="toggleDetails(city)">
        <!--Card Front -->
-         <div class="card-front">
+         <div class="card-front"> 
+          <!-- <div class="card-header" @click.stop="openModal(city.images)">
+    <v-carousel
+      :items="city.images"
+      hide-delimiters
+      hide-controls
+      :show-arrows="true"
+      :autoplay="true"
+      :cycle="true"
+      :height="215.02"
+    >
+      <v-carousel-item
+        v-for="(image, index) in city.images"
+        :key="index"
+        :src="'data:image/jpeg;base64,' + image"
+        :width="310.92"
+      >
+      </v-carousel-item>
+    </v-carousel>
+  </div> -->
           <div class="card-header" @click.stop="openModal(city.image)">
             <img :src="'data:image/jpeg;base64,'+city.image" :width="310.92" :height="215.02" />
           </div>

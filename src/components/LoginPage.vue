@@ -126,7 +126,7 @@ export default {
       if (!this.emailErrors.length && !this.passwordErrors.length) {
         console.log('Form is valid! Submitting...');
         try {
-          const response = await axios.post('http://192.168.1.25:8080/UserReg/login', {
+          const response = await axios.post('http://192.168.1.26:8080/UserReg/login', {
             "email": this.email,
             "password": this.password,
           });
@@ -137,7 +137,7 @@ export default {
             this.$store.commit('setId',response.data.id);
             this.$store.commit('setName',response.data.name);
             this.$store.commit('setEmail',response.data.email);
-            this.$router.push('/edit-page');
+            this.$router.push('/profile-page');
           }
         } catch (error) {
           console.error(error);

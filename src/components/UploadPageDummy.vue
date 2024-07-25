@@ -90,6 +90,9 @@ import { reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const initialState = {
   name: '',
@@ -171,7 +174,7 @@ async function validateAndSubmit() {
         console.log(pair[0]+ ': ' + pair[1]); 
       }
 
-      const response = await axios.post('http://192.168.1.9:8080/GreenGuard/save', formData, {
+      const response = await axios.post('http://192.168.1.26:8080/GreenGuard/save', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -182,6 +185,7 @@ async function validateAndSubmit() {
         alert('Form submitted successfully!');
         Object.assign(state, initialState); // Reset the state to initial values
         v$.value.$reset(); // Reset validations
+        router.push('/profile-page');
       }
     } catch (error) {
       console.error('Error submitting form:', error);

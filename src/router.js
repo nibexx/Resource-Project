@@ -144,7 +144,9 @@ const routes = [
     path: '/upload-new',
   
     component: () => import('./components/UploadNewDummy.vue')
-  }
+  },
+  
+
 ];
 
 const router = createRouter({
