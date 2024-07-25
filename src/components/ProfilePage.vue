@@ -7,6 +7,8 @@
         </div>
         <div class="navbar-right">
           <button class="upload-button" @click="toUpload">+ Upload New</button>
+            <!-- Added Earth Icon -->
+            <span class="mdi mdi-earth explore-icon" @click="toDisplay" title="Explore All Resources"></span>
           <div class="user-info" @click="toggleSidebar">
             <i class="mdi mdi-account user-icon"></i>
             <span class="user-name">{{ firstName }}</span>
@@ -223,6 +225,9 @@ export default {
     confirmLogout() {
       this.$store.commit('setAuthenticated',false);
       this.$router.push('/');
+    },
+    toDisplay(){
+      this.$router.push('/dummy');
     }
   },
   // async mounted() {
@@ -272,6 +277,17 @@ export default {
   margin-right: 155px;
   
   transition: background-color 0.3s ease;
+}
+.explore-icon {
+  font-size: 40px; /* Adjust size if needed */
+  color: white;
+  margin-right: 15px; /* Space between icon and user info */
+  cursor: pointer;
+}
+
+.explore-icon:hover {
+  color: #007bff; /* Optional: Change color on hover */
+  /* You can customize hover effects here */
 }
 
 .upload-button:hover {

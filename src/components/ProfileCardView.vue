@@ -328,6 +328,7 @@ export default {
     <div v-if="cards.length === 0" class="add-card-icon" @click="toUpload">
       +
     </div>
+    <div v-else>
     <div v-for="card in cards" :key="card.title" class="card me-2 ms-2 mb-3">
       <img :src="'data:image/jpeg;base64,'+card.image" :width="360.92" :height="200" />
       <!-- <img class="card-image" :src="card.image" :alt="card.title" /> -->
@@ -349,7 +350,7 @@ export default {
         <p>{{ truncateDescription(card.description, true) }}</p>
       </div>
     </div>
-
+    </div>
     
     <div v-if="showEditPopup" class="modal" @click.self="closeEditPopup">
       <div class="modal-content">
@@ -887,23 +888,23 @@ export default {
 .modal-buttons button[type="button"]:hover {
   background-color: #5a6268;
 }
-/* Style for the + icon */
 .add-card-icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
+  width: 80px; /* Reduced width */
+  height: 80px; /* Reduced height */
   background-color: rgb(22, 127, 22);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px;
+  font-size: 32px; /* Reduced font size */
   cursor: pointer;
 }
+
 
 .add-card-icon:hover {
   background-color: rgb(14, 83, 14);

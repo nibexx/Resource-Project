@@ -135,11 +135,7 @@ const routes = [
         component: () => import('./components/MapPage.vue'),
 
   },
-  {
-    path: '/upload-dummy',
-    name: 'upload-dummy',
-    component: () => import('./components/UploadPageDummy.vue')
-  },
+
   {
     path: '/upload-new',
   
