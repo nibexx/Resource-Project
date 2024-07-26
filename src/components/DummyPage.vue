@@ -712,27 +712,31 @@ export default {
 
       <!-- Filter Dropdowns -->
     
-      <div class="filters"> 
-        <!-- Category Filter -->
-         <div class="category">
-          <label for="categoryDropdown">
-            <i class="mdi mdi-filter-menu mr-3" style="color: white;"></i>  
-          </label>
-          <select id="categoryDropdown" v-model="selectedCategory" @change="applyFilters">
-            <option  value=""  >Filter Category</option>
-            <option class="dropdown" v-for="category in categories" :key="category">{{ category }}</option>
-          </select>
-        </div>
+<!-- Add a container for your dropdowns -->
+<div class="filters-container">
+  <!-- Category Dropdown -->
+  <div class="dropdown-wrapper">
+    <label for="categoryDropdown">
+      <i class="mdi mdi-filter-menu filter-icon"></i>
+    </label>
+    <select id="categoryDropdown" v-model="selectedCategory" @change="applyFilters">
+      <option value="">Filter Category</option>
+      <option class="dropdown" v-for="category in categories" :key="category">{{ category }}</option>
+    </select>
+  </div>
 
-        
-        <div class="district">
-         
-          <select id="districtDropdown" v-model="selectedDistrict" @change="applyFilters">
-            <option value=""  >Filter Districts</option>
-            <option class="dropdown" v-for="district in districts" :key="district">{{ district }}</option>
-          </select>
-        </div>
-      </div> 
+  <!-- District Dropdown -->
+  <div class="dropdown-wrapper">
+    <label for="categoryDropdown">
+      <i class="mdi mdi-filter-menu filter-icon"></i>
+    </label>
+    <select id="districtDropdown" v-model="selectedDistrict" @change="applyFilters">
+      <option value="">Filter Districts</option>
+      <option class="dropdown" v-for="district in districts" :key="district">{{ district }}</option>
+    </select>
+  </div>
+</div>
+
    
 
 
@@ -892,14 +896,57 @@ export default {
 
 
 /* Filters Styles */
-.filters {
+.filters-container {
   display: flex;
-  gap: 20px;
-  padding: 10px;
-  justify-content: flex-end; /* Align filters to the right */
-  /* background-color: #f5f5dc; */
-  z-index: 100;
-} 
+  gap: 20px; /* Adds space between the dropdowns */
+  margin-left: 1130px;
+  margin-top: 10px;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px; /* Adjust icon's horizontal position */
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensures clicks go through to the select */
+  color: #ffffff;
+  font-size: 1.2em;
+  z-index: 1; /* Ensure icon is above the dropdown */
+}
+
+select {
+  padding: 10px 30px; /* Adjust padding for the icon */
+  border-radius: 4px;
+  border: 2px solid #ffffff;
+  background-color: rgba(13, 13, 13, 0.201);
+  appearance: none; /* Remove default styling */
+  -webkit-appearance: none; /* Remove default styling for Safari */
+  -moz-appearance: none; /* Remove default styling for Firefox */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px;
+  color: #ffffff;
+  font-size: 1em;
+  width: 180px; /* Set a width for the dropdown */
+}
+
+.dropdown {
+  padding: 8px;
+  color: #333;
+  background-color: white;
+  border-bottom: 1px solid #ffffff;
+}
+
+.dropdown:last-child {
+  border-bottom: none; /* Remove border from last item */
+}
+
 /* .category label {
   display: flex;
   align-items: center;
@@ -907,48 +954,6 @@ export default {
   cursor: pointer;
   color: #000;
 } */
-.category {
-  position: relative;
-}
-
-.category label i {
-  font-size: 1.5rem;
-  
-}
-.category select {
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  width: 170px;
-}
-
-.district select {
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  width: 170px;
-}
-.category select,
-.district select {
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  width: 170px;
-  color: white; /* Set text color */
-  background-color: rgba(0, 0, 0, 0.205); /* Set background color */
-}
-
-.category select option,
-.district select option {
-  color: black; /* Set text color for options */
-  background-color: white; /* Set background color for options */
-}
-
-/* Ensure the dropdown arrow color matches the text color */
-.category select::-ms-expand,
-.district select::-ms-expand {
-  color: white;
-}
 /* Card Container Styles */
 .card-container {
   padding: 0 1rem;
