@@ -45,8 +45,8 @@ export default {
         // Add markers to the map
         markers.forEach(marker => {
           const [id,imageData, lat, lng ] = marker;
-
-          const icon = (id === this.locationId) ? highlightIcon : defaultIcon;
+          
+          const icon = (id === parseInt(this.locationId)) ? highlightIcon : defaultIcon;
 
           L.marker([parseFloat(lat), parseFloat(lng)], { icon })
             .addTo(this.map)

@@ -738,7 +738,7 @@ export default {
 
     <!-- Card Container Component -->
     <div class="card-container mb-3" v-motion-fade-visible>
-      <div class="card" v-for="(city, index) in cities" :key="index" :class="{ 'is-flipped': city.showDetails }" @click="toggleDetails(city)">
+      <div class="card " v-for="(city, index) in cities" :key="index" :class="{ 'is-flipped': city.showDetails }" @click="toggleDetails(city)">
        <!--Card Front -->
          <div class="card-front"> 
           <!-- <div class="card-header" @click.stop="openModal(city.images)">
