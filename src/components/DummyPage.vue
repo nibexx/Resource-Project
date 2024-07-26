@@ -766,7 +766,7 @@ export default {
           <div class="card-body pb-0">
             <div class="d-flex justify-content-between">
               <h3>{{ city.saverName }}</h3>
-              <button class="location-btn mdi mdi-map-marker-radius"></button>
+              <button @click="navLocation(city.id)" class="location-btn mdi mdi-map-marker-radius"></button>
             </div>
             <p class="text-subtitle-1">Category: {{ city.category }}</p>
             <p class="text-subtitle-2 mb-2">District: {{ city.district }}</p>
@@ -817,7 +817,7 @@ export default {
       modalImage: '',
       selectedCategory: '',
       selectedDistrict: '',
-      categories: ['Lake', 'pond', 'Tree', 'Seashore', 'soil', 'Canal', 'Plantation', 'Garden'],
+      categories: ['Lake', 'Pond', 'Tree', 'Seashore', 'Soil', 'Canal', 'Plantation', 'Garden'],
       districts: [
         'Alappuzha', 'Ernakulam', 'Idukki', 'Kannur', 'Kasaragod', 'Kollam', 'Kottayam', 'Kozhikode',
         'Malappuram', 'Palakkad', 'Pathanamthitta', 'Thiruvananthapuram', 'Thrissur', 'Wayanad'
@@ -828,9 +828,12 @@ export default {
     this.fetchCities();
   },
   methods: {
+    navLocation(locationId) {
+  this.$router.push({ path: '/locations', query: { locationId } });
+},
     async fetchCities() {
       try {
-        const response = await axios.get('http://192.168.1.26:8080/GreenGuard/getAllGuardsArray');
+        const response = await axios.get('http://192.168.1.26:8080/GreenGuard/getAll');
         console.log(response.data);
         this.cities = response.data;
       } catch (error) {

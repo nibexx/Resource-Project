@@ -5,7 +5,7 @@
         <h2 class="logo">Green Guard </h2>
       </div>
       <div class="buttons">
-        <button class="white-border" @click="toSign">Sign In</button>
+        <button class="white-border" @click="toSign">Sign Up</button>
         <button class="white-border" @click="toLogin">Login</button>
       </div>
       <div class="toggle1" @click="toggleMenu1">
@@ -13,7 +13,7 @@
       </div>
     </header>
     <div v-if="isActive" class="dropdown-card">
-      <button class="white-border" @click="toSign">Sign In</button>
+      <button class="white-border" @click="toSign">Sign Up</button>
       <button class="white-border" @click="toLogin">Login</button>
     </div>
   
