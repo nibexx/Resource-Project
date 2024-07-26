@@ -330,7 +330,7 @@ export default {
     </div>
     <div v-else>
     <div v-for="card in cards" :key="card.title" class="card me-2 ms-2 mb-3">
-      <img :src="'data:image/jpeg;base64,'+card.image" :width="360.92" :height="200" />
+      <img :src="'data:image/jpeg;base64,'+ card.image" :width="360.92" :height="200" />
       <!-- <img class="card-image" :src="card.image" :alt="card.title" /> -->
       <div class="card-content">
         <div class="card-header">
@@ -405,13 +405,14 @@ export default {
   },
   computed: {
     userEmail() {
-      return this.$store.getters.getEmail;
+      // return this.$store.getters.getEmail;
+      return this.$store.getters.getUserData.email;
     },
     userId() {
-      return this.$store.getters.getId;
+      return this.$store.getters.getUserData.id;
     },
     userName(){
-      return this.$store.getters.getName;
+      return this.$store.getters.getUserData.name;
     }
   },
   mounted() {

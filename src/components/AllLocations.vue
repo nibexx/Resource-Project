@@ -37,7 +37,7 @@ export default {
 
         const highlightIcon = L.icon({
           iconUrl: redIcon,
-          iconSize: [32, 32],
+          iconSize: [50, 50],
           iconAnchor: [16, 32],
           popupAnchor: [0, -32],
         });

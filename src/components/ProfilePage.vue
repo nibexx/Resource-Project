@@ -126,13 +126,14 @@ export default {
       return this.userName.split(' ')[0];
     },
     userId() {
-      return this.$store.getters.getId;
+      return this.$store.getters.getUserData.id;
+      // return this.$store.getters.getId;
     },
     userName() {
-      return this.$store.getters.getName;
+      return this.$store.getters.getUserData.name;
     },
     userEmail() {
-      return this.$store.getters.getEmail;
+      return this.$store.getters.getUserData.email;
     }
   },
   methods: {
@@ -224,6 +225,7 @@ export default {
 
     confirmLogout() {
       this.$store.commit('setAuthenticated',false);
+      sessionStorage.removeItem("user")
       this.$router.push('/');
     },
     toDisplay(){
@@ -274,7 +276,7 @@ export default {
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 155px;
+  margin-right: 205px;
   
   transition: background-color 0.3s ease;
 }

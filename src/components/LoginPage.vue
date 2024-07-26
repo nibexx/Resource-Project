@@ -134,6 +134,8 @@ export default {
             console.log(response.data);
             this.$store.commit('setAuthenticated',true);
             console.log('Success');
+            sessionStorage.setItem("user",JSON.stringify(response.data))
+            this.$store.commit('setUserData',response.data);
             this.$store.commit('setId',response.data.id);
             this.$store.commit('setName',response.data.name);
             this.$store.commit('setEmail',response.data.email);

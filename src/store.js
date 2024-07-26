@@ -1,3 +1,4 @@
+
 import {createStore} from 'vuex';
 const store = createStore({
     state() {
@@ -9,6 +10,7 @@ const store = createStore({
         
            
           },
+          userData:JSON.parse(sessionStorage.getItem("user"))||"",
           isAuthenticated: false,
           lat : '',
           lng : '',
@@ -16,6 +18,9 @@ const store = createStore({
         }
     },
     mutations: {
+      setUserData(state,payload){
+        state.userData=payload
+      },
         setId(state, payload){
             state.user.id = payload;    
          },
@@ -40,6 +45,9 @@ const store = createStore({
 
     },
     getters: {
+      getUserData(state){
+        return state.userData
+      },
         getId(state) {
             return state.user.id;
           },
