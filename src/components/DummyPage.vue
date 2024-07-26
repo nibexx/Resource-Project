@@ -995,7 +995,7 @@ select {
 }
 .card-back {
   transform: rotateY(180deg);
-  color: #000;
+  color: #030303;
   padding: 1rem;
 }
 .card.is-flipped {
