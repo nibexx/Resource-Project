@@ -338,7 +338,7 @@ export default {
         </v-btn>
     </div>
     <v-row v-else>
-      <v-col cols="3" v-for="card in cards" :key="card.title">
+      <v-col cols="3" v-for="(card,index) in cards" :key="card.title">
         <v-card class="mx-auto my-12" max-width="324">
     <template v-slot:loader="{ isActive }">
       <v-progress-linear
@@ -362,9 +362,13 @@ export default {
     <v-card-text>
       <div class="my-4 text-subtitle-1">{{ card.category }}</div>
 
-      <div>
-        {{ truncateDescription(card.description, true) }}
-      </div>
+        <div :class="{ description: expandedIndex !== index }">
+          {{ expandedIndex === index ? card.description : truncateDescription(card.description) }}
+        </div>
+        
+        <v-btn text @click="toggleReadMore(index)">
+          {{ expandedIndex === index ? 'Show less' : 'Read more' }}
+        </v-btn>
     </v-card-text>
 
     <v-divider class="mx-4 mb-1"></v-divider>
@@ -438,7 +442,29 @@ export default {
   
   data() {
     return {
-      cards: [],
+      expandedIndex: -1,
+      cards: [
+//         {category: "River",
+// description: "aaa aaa  aaaa",
+// district: "Alappuzha",
+// email: "aatish@gmail.com",
+// id: 16,
+// image: "https://images.pexels.com/photos/709552/pexels-photo-709552.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+// latitude: "9.510174962668149",
+// longitude: "76.33385818426025",
+// saverName: "Aatish",
+// },
+// {category: "Plantation",
+// description: "Plantations are farms specializing in cash crops, usually mainly planting a single crop, with perhaps ancillary areas for vegetables for eating and so on. Plantations, centered on a plantation house, grow crops including cotton, cannabis, coffee, tea, cocoa, sugar cane, opium, sisal, oil seeds, oil palms, fruits, rubber trees and forest trees.",
+// district: "Kottayam",
+// email: "aatish@gmail.com",
+// id: 22,
+// image: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHB",
+// latitude: "9.65120722611736",
+// longitude: "76.64533955249628",
+// saverName: "aatish",
+// }
+],
       showEditPopup: false,
       selectedCard: null,
       editedCard: {
@@ -551,13 +577,18 @@ export default {
     };
     this.imagePreviewUrl = null;
   },
-  truncateDescription(description, truncate) {
-    if (truncate) {
-      return description.split(' ').slice(0, 14).join(' ') + (description.split(' ').length > 14 ? '...' : '');
-    } else {
-      return description;
-    }
-  }
+  truncateDescription(description) {
+      const maxLength = 200; // Adjust this value based on how much text you want to show
+      return description.length > maxLength ? description.substring(0, maxLength) + "..." : description;
+    },
+    toggleReadMore(index) {
+      console.log("ind",index)
+      if (this.expandedIndex === index) {
+        this.expandedIndex = -1; // Collapse the card if it's already expanded
+      } else {
+        this.expandedIndex = index; // Expand the selected card
+      }
+    },
 },
 toUpload(){
   this.$router.push('upload-new');
@@ -788,6 +819,15 @@ export default {
 </script> -->
 
 <style scoped>
+.description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  max-height: 3.6em; /* Adjust to match line height * number of lines */
+  line-height: 1.8em; /* Line height */
+}
 .name {
             text-align: center;
             margin-top: 180px;
