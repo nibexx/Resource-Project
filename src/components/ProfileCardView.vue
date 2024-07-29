@@ -329,7 +329,11 @@ export default {
       +
     </div> -->
     <div v-if="cards.length === 0"  >
-      <new-user></new-user>
+     <h1 style="text-align: center;  margin-top: 180px;" class="name"> &#128075; Hi {{ userName }}!..</h1>
+     <p style="text-align: center; " class="desc">Upload your amazing finds and contribute to our growing community of nature enthusiasts!&#127807;</p>
+     <v-btn  class="upload-btn">
+          <v-icon left>mdi-plus</v-icon> Upload Resource
+        </v-btn>
     </div>
     <v-row v-else>
       <v-col cols="3" v-for="card in cards" :key="card.title">
@@ -428,11 +432,8 @@ export default {
 
 <script>
 import axios from 'axios';
-import NewUser from './NewUser.vue';
 export default {
-  components:{
-    NewUser
-  },
+  
   data() {
     return {
       cards: [],
@@ -453,12 +454,14 @@ export default {
       // return this.$store.getters.getEmail;
       return this.$store.getters.getUserData.email;
     },
+      userName() {
+        return this.$store.getters.getUserData.name;
+      },
+   
     userId() {
       return this.$store.getters.getUserData.id;
     },
-    userName(){
-      return this.$store.getters.getUserData.name;
-    }
+    
   },
   mounted() {
     this.fetchCards();
@@ -783,6 +786,20 @@ export default {
 </script> -->
 
 <style scoped>
+.name{
+  font-size: 60px;
+}
+.desc{
+  font-size: 32px;
+}
+.upload-btn {
+    margin-left: 650px;
+    margin-top: 20px;
+    font-weight: bold;
+    background-color: green;
+    color: white;
+
+  }
 .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -956,4 +973,5 @@ export default {
   background-color: rgb(14, 83, 14);
   color: white;
 }
+
 </style>  
