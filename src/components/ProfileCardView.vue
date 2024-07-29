@@ -329,10 +329,12 @@ export default {
       +
     </div> -->
     <div v-if="cards.length === 0"  >
-     <h1 style="text-align: center;  margin-top: 180px;" class="name"> &#128075; Hi {{ userName }}!..</h1>
+      <h1 class="name">
+        <span class="emoji">&#128075;</span> Hi {{ userName }}!..
+    </h1>
      <p style="text-align: center; " class="desc">Upload your amazing finds and contribute to our growing community of nature enthusiasts!&#127807;</p>
      <v-btn  class="upload-btn">
-          <v-icon left>mdi-plus</v-icon> Upload Resource
+          <v-icon left>mdi-upload</v-icon> Upload Resource
         </v-btn>
     </div>
     <v-row v-else>
@@ -786,11 +788,28 @@ export default {
 </script> -->
 
 <style scoped>
-.name{
-  font-size: 60px;
-}
+.name {
+            text-align: center;
+            margin-top: 180px;
+        }
+
+        .emoji {
+            display: inline-block;
+            
+           animation: wave 1.5s infinite;
+            transform-origin: bottom right;
+        }
+
+        @keyframes wave {
+            0% { transform: rotate(0deg); }
+            /* 15% { transform: rotate(-20deg); } */
+            /* 30% { transform: rotate(20deg); }
+            45% { transform: rotate(-20deg); } */
+            60% { transform: rotate(20deg); }
+            100% { transform: rotate(0deg); }
+        }
 .desc{
-  font-size: 32px;
+  font-size: 28px;
 }
 .upload-btn {
     margin-left: 650px;
