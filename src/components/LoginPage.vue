@@ -126,7 +126,7 @@ export default {
       if (!this.emailErrors.length && !this.passwordErrors.length) {
         console.log('Form is valid! Submitting...');
         try {
-          const response = await axios.post('http://192.168.1.26:8080/UserReg/login', {
+          const response = await axios.post('http://192.168.1.20:8080/UserReg/login', {
             "email": this.email,
             "password": this.password,
           });

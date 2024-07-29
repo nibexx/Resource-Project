@@ -324,14 +324,56 @@ export default {
 </style> -->
  
 <template>
-  <div id="app1" class="cards-container">
-    <div v-if="cards.length === 0" class="add-card-icon" @click="toUpload">
+  <div id="app1" class="container-fluid">
+    <!-- <div v-if="cards.length === 0" class="add-card-icon" @click="toUpload">
       +
+    </div> -->
+    <div v-if="cards.length === 0"  >
+      <new-user></new-user>
     </div>
-    <div v-else>
-    <div v-for="card in cards" :key="card.title" class="card me-2 ms-2 mb-3">
+    <v-row v-else>
+      <v-col cols="3" v-for="card in cards" :key="card.title">
+        <v-card class="mx-auto my-12" max-width="324">
+    <template v-slot:loader="{ isActive }">
+      <v-progress-linear
+        :active="isActive"
+        color="deep-purple"
+        height="4"
+        indeterminate
+      ></v-progress-linear>
+    </template>
+
+    <v-img
+    
+      :src="'data:image/jpeg;base64,'+ card.image" :width="360.92" :height="200"
+      cover
+    ></v-img>
+
+    <v-card-item>
+      <v-card-title>{{ card.title }}</v-card-title>
+    </v-card-item>
+
+    <v-card-text>
+      <div class="my-4 text-subtitle-1">{{ card.category }}</div>
+
+      <div>
+        {{ truncateDescription(card.description, true) }}
+      </div>
+    </v-card-text>
+
+    <v-divider class="mx-4 mb-1"></v-divider>
+
+    <v-card-actions>
+      <v-btn @click="editCard(card)" icon="mdi-pencil"></v-btn>
+      <v-btn @click="deleteCard(card.id)" icon="mdi-delete"></v-btn>
+    </v-card-actions>
+  </v-card>
+
+      </v-col>
+
+    <!-- <div v-for="card in cards" :key="card.title" class="card me-2 ms-2 mb-3">
       <img :src="'data:image/jpeg;base64,'+ card.image" :width="360.92" :height="200" />
-      <!-- <img class="card-image" :src="card.image" :alt="card.title" /> -->
+      
       <div class="card-content">
         <div class="card-header">
           <h2 class="card-title">{{ card.title }}</h2>
@@ -349,16 +391,16 @@ export default {
         <p>{{ card.district }}</p>
         <p>{{ truncateDescription(card.description, true) }}</p>
       </div>
-    </div>
-    </div>
+    </div> -->
+  </v-row>
     
     <div v-if="showEditPopup" class="modal" @click.self="closeEditPopup">
       <div class="modal-content">
         <h2>Edit Card</h2>
         <form @submit.prevent="saveChanges">
-          <label>Title:</label>
+          <!-- <label>Title:</label>
           <input type="text" v-model="editedCard.title" >
-          
+           -->
           <label>Category:</label>
           <input type="text" v-model="editedCard.category" required>
           
@@ -386,8 +428,11 @@ export default {
 
 <script>
 import axios from 'axios';
-
+import NewUser from './NewUser.vue';
 export default {
+  components:{
+    NewUser
+  },
   data() {
     return {
       cards: [],
@@ -421,7 +466,7 @@ export default {
   methods: {
   async fetchCards() {
     try {
-      const response = await axios.get(`http://192.168.1.26:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
+      const response = await axios.get(`http://192.168.1.20:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
       if (response.status >= 200 && response.status < 300) {
         console.log('backendResponse', response.data);
         this.cards = response.data;
@@ -437,7 +482,7 @@ export default {
   },
   async deleteCard(cardId) {
     try {
-      await axios.delete(`http://192.168.1.26:8080/GreenGuard/delete/${cardId}`);
+      await axios.delete(`http://192.168.1.20:8080/GreenGuard/delete/${cardId}`);
       this.cards = this.cards.filter(card => card.id !== cardId);
     } catch (error) {
       console.error('Error deleting card:', error);
@@ -465,7 +510,7 @@ export default {
   },
   async updateCard(formData) {
     try {
-      const response = await axios.put(`http://192.168.1.26:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
+      const response = await axios.put(`http://192.168.1.20:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

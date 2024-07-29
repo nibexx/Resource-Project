@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    
       <div class="navbar">
         <div class="navbar-left">
           <h1>Profile Page</h1>
@@ -92,7 +92,7 @@
           <button class="button-cancel" @click="showDeleteModal = false">Cancel</button>
         </div>
       </div>
-    </div>
+    
     <ProfileCardView></ProfileCardView>
   </div>
 </template>
