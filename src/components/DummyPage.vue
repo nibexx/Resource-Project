@@ -1,4 +1,5 @@
 <!-- <template>
+
   <div id="root">
       Header Component  
     <nav class="navBar">
