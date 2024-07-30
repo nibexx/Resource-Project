@@ -5,7 +5,7 @@
         <h2 class="logo">Green Guard </h2>
       </div>
       <div class="buttons">
-        <button class="white-border" @click="toSign">Sign In</button>
+        <button class="white-border" @click="toSign">Sign Up</button>
         <button class="white-border" @click="toLogin">Login</button>
       </div>
       <div class="toggle1" @click="toggleMenu1">
@@ -13,7 +13,7 @@
       </div>
     </header>
     <div v-if="isActive" class="dropdown-card">
-      <button class="white-border" @click="toSign">Sign In</button>
+      <button class="white-border" @click="toSign">Sign Up</button>
       <button class="white-border" @click="toLogin">Login</button>
     </div>
   
@@ -23,7 +23,9 @@
       <h3>Never Stop To</h3>
       <h3>Exploring The World</h3>
       <p>Nature's beauty whispers in the wind, roars in the ocean's waves, and blooms in every petal. It holds the secrets of life in its silent forests and paints the sky with dreams. Embrace its wild grace; it is where the soul finds its truest reflection !</p>
-      <a href="#">Explore</a>
+      <a @click="toDisplay">Explore</a>
+     
+
     </div>
     <ul class="social">
       <li><a href="https://www.instagram.com/"><img src="https://i.ibb.co/x7P24fL/facebook.png"></a></li>
@@ -52,6 +54,9 @@ export default {
     toggleMenu1() {
       this.isActive = !this.isActive;
     },
+    toDisplay(){
+      this.$router.push("/dummy");
+    }
     }
   }
 

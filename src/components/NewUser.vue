@@ -1,86 +1,66 @@
 <template>
-    <div class="profile-page-container">
-      <div class="profile-page">
-        <div class="welcome-message">
-          <h2>Welcome {{ userName }} </h2>
-          <p>It looks like you're new here. Let's get started by adding your first resource.</p>
-          <!-- Use a button with a dynamic image -->
-          <button @click="addResource" class="upload-button">
-            <img :src="uploadIcon" alt="Upload Icon">
-          </button>
-        </div>
-        <!-- Additional content or components can be added here -->
+    <div class="welcome-container">
+      <div class="welcome-card">
+        <h3>Hi {{ userName }} ,</h3>
+        <p>Upload your amazing finds and contribute to our growing community of nature enthusiasts! 🌿</p>
+        <v-btn  class="upload-btn">
+          <v-icon left>mdi-plus</v-icon> Upload Resource
+        </v-btn>
       </div>
     </div>
   </template>
   
   <script>
   export default {
-    data() {
-      return {
-        uploadIcon: require('@/assets/png-transparent-green-upload-icon-or-logo.png') // Assuming this is your image path
-      };
+    computed: {
+      userName() {
+        return this.$store.getters.getUserData.name;
+      },
     },
-    methods: {
-      addResource() {
-        this.$router.push('/file-upload');
-      }
-    },
-    computed:{
-        userName(){
-        return this.$store.getters.getName
-       
-    },
-    }
   };
   </script>
   
   <style scoped>
-  .profile-page-container {
+  .welcome-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   }
   
-  .profile-page {
-    max-width: 800px;
-    padding: 40px;
+  .welcome-card {
+    padding: 40px 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    width: 100%;
   }
   
-  .welcome-message {
-    margin-bottom: 40px;
-  }
-  
-  .welcome-message h2 {
-    font-size: 2rem;
+  .welcome-card h3 {
     margin-bottom: 10px;
+    text-align: left;
+    font-size: 1.5em;
+    color: #333;
   }
   
-  .welcome-message p {
-    font-size: 1.2rem;
-    color: #555;
+  .welcome-card p {
     margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #666;
   }
   
-  .upload-button {
-    background: none;
-    border: none;
-    cursor: pointer;
+  .upload-btn {
+    margin-top: 20px;
+    font-weight: bold;
+    background-color: green;
+    color: white;
+
   }
-  
-  .upload-button img {
-    width: 94px; /* Adjust size as needed */
-    height: 94px; /* Adjust size as needed */
-    transition: transform 0.3s ease; /* Optional: Add a hover effect */
-  }
-  
-  .upload-button:hover img {
-    transform: scale(1.1); /* Optional: Add a hover effect */
+  .upload-btn:hover{
+    background-color: rgb(29, 90, 29);
+    color: white;
   }
   </style>
-  

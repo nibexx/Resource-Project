@@ -3,44 +3,58 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
 import L from 'leaflet';
 import axios from 'axios';
-
-// Import the location icon (replace with your actual icon path)
-import locationIcon from '@/assets/marker.png'; // Adjust the path based on your project structure
+import blueIcon from '@/assets/bluemarker.png'; // Replace with the actual path for the blue icon
+import redIcon from '@/assets/marker.png';   // Replace with the actual path for the red icon
 
 export default {
-  setup() {
-    const map = ref(null);
-
-    const fetchMarkers = async () => {
+  data() {
+    return {
+      map: null,
+    };
+  },
+  computed: {
+    locationId() {
+      // Access the locationId from the query parameters
+      return this.$route.query.locationId || null;
+    }
+  },
+  methods: {
+    async fetchMarkers() {
       try {
-        const response = await axios.get('http://192.168.1.26:8080/GreenGuard/getAllImagesAndLocations'); 
-        console.log(response.data); // Log the data to verify structure
-        const markers = response.data; // Adjust based on your API response structure
-
+        const response = await axios.get('http://192.168.1.20:8080/GreenGuard/getAllImagesAndLocations');
+        console.log(response.data, "loc", this.locationId);
+        const markers = response.data;
+        
         // Define custom icon options
-        const customIcon = L.icon({
-          iconUrl: locationIcon,
-          iconSize: [32, 32], // Size of the icon
-          iconAnchor: [16, 32], // Point of the icon which corresponds to marker's location
-          popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
+        const defaultIcon = L.icon({
+          iconUrl: blueIcon,
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32],
         });
 
-        // Add markers to the map using custom icon
-        markers.forEach(marker => {
-          // Ensure that marker data is correctly parsed
-          const [imageData, lat, lng] = marker;
+        const highlightIcon = L.icon({
+          iconUrl: redIcon,
+          iconSize: [50, 50],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32],
+        });
 
-          L.marker([parseFloat(lat), parseFloat(lng)], { icon: customIcon })
-            .addTo(map.value)
+        // Add markers to the map
+        markers.forEach(marker => {
+          const [id,imageData, lat, lng ] = marker;
+          
+          const icon = (id === parseInt(this.locationId)) ? highlightIcon : defaultIcon;
+
+          L.marker([parseFloat(lat), parseFloat(lng)], { icon })
+            .addTo(this.map)
             .bindPopup(`
               <b>Location</b><br>
               <img src="data:image/jpeg;base64,${imageData}" width="310.92" height="215.02" />
             `)
             .on('click', function () {
-              // Optionally, you can customize behavior on marker click
               this.openPopup();
             });
         });
@@ -48,87 +62,22 @@ export default {
       } catch (error) {
         console.error('Error fetching marker data:', error);
       }
-    };
+    },
+  },
+  mounted() {
+    this.map = L.map('map').setView([10.8505, 76.2711], 8);
 
-    onMounted(() => {
-      // Initialize the map
-      map.value = L.map('map').setView([10.8505, 76.2711], 8); // Centered in Kerala, India
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.map);
 
-      // Set up the OpenStreetMap layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map.value);
-
-      // Fetch marker data and add to the map
-      fetchMarkers();
-    });
-  }
+    this.fetchMarkers();
+  },
 };
 </script>
 
 <style>
-/* Make sure to give the map container a height */
 #map {
   height: 100vh;
 }
 </style>
-
-
-
-<!-- <template>
-  <div id="map" style="height: 100%"></div>
-</template>
-
-<script>
-import { onMounted } from 'vue';
-import L from 'leaflet';
-
-// Import the location icon (replace with your actual icon path)
-import locationIcon from '@/assets/marker.png'; // Adjust the path based on your project structure
-
-export default {
-
-  setup() {
-    onMounted(() => {
-      // Initialize the map
-      const map = L.map('map').setView([10.8505, 76.2711], 8); // Centered in Kerala, India
-
-      // Set up the OpenStreetMap layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-
-      // Sample markers with latitude and longitude
-      const markers = [
-        { lat: 10.8505, lng: 76.2711, name: 'Kerala, India' },
-        { lat: 9.9312, lng: 76.2673, name: 'Kochi, India' },
-        { lat: 8.5241, lng: 76.9366, name: 'Thiruvananthapuram, India' },
-        { lat: 11.2588, lng: 75.7804, name: 'Kozhikode, India' }
-      ];
-
-      // Define custom icon options
-      const customIcon = L.icon({
-        iconUrl: locationIcon,
-        iconSize: [32, 32], // Size of the icon
-        iconAnchor: [16, 32], // Point of the icon which corresponds to marker's location
-        popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
-      });
-
-      // Add markers to the map using custom icon
-      markers.forEach(marker => {
-        L.marker([marker.lat, marker.lng], { icon: customIcon })
-          .addTo(map)
-          .bindPopup(`<b>${marker.name}</b>`)
-          .openPopup();
-      });
-    });
-  }
-};
-</script>
-
-<style>
-/* Make sure to give the map container a height */
-#map {
-  height: 100vh;
-}
-</style> -->

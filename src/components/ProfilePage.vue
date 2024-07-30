@@ -1,12 +1,14 @@
 <template>
   <div>
-    <div>
+    
       <div class="navbar">
         <div class="navbar-left">
           <h1>Profile Page</h1>
         </div>
         <div class="navbar-right">
-          <button class="upload-button">+ Upload New</button>
+          <button class="upload-button" @click="toUpload">+ Upload New</button>
+            <!-- Added Earth Icon -->
+            <span class="mdi mdi-earth explore-icon" @click="toDisplay" title="Explore All Resources"></span>
           <div class="user-info" @click="toggleSidebar">
             <i class="mdi mdi-account user-icon"></i>
             <span class="user-name">{{ firstName }}</span>
@@ -90,7 +92,7 @@
           <button class="button-cancel" @click="showDeleteModal = false">Cancel</button>
         </div>
       </div>
-    </div>
+    
     <ProfileCardView></ProfileCardView>
   </div>
 </template>
@@ -124,18 +126,22 @@ export default {
       return this.userName.split(' ')[0];
     },
     userId() {
-      return this.$store.getters.getId;
+      return this.$store.getters.getUserData.id;
+      // return this.$store.getters.getId;
     },
     userName() {
-      return this.$store.getters.getName;
+      return this.$store.getters.getUserData.name;
     },
     userEmail() {
-      return this.$store.getters.getEmail;
+      return this.$store.getters.getUserData.email;
     }
   },
   methods: {
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
+    },
+    toUpload(){
+      this.$router.push('/upload-new');
     },
     openEditProfile() {
       this.editUserName = this.userName;
@@ -170,7 +176,7 @@ export default {
       password: this.newPassword,
     };
 
-        const response = await axios.put(`http://192.168.1.25:8080/UserReg/update/${this.userId}`, profileData);
+        const response = await axios.put(`http://192.168.1.26:8080/UserReg/update/${this.userId}`, profileData);
 
         if (response.status === 200) {
           this.$store.commit('setName', this.editUserName);
@@ -178,7 +184,7 @@ export default {
         }
            // If the password is being changed, update it
     if (this.isChangingPassword && this.newPassword) {
-      const passwordResponse = await axios.put(`http://192.168.1.25:8080/UserReg/updatePassword/${this.userId}`, passwordData);
+      const passwordResponse = await axios.put(`http://192.168.1.26:8080/UserReg/updatePassword/${this.userId}`, passwordData);
 
       // Check if the password update was successful
       if (passwordResponse.status === 200) {
@@ -201,7 +207,7 @@ export default {
 
     const response = await axios({
       method: 'delete',
-      url: 'http://192.168.1.25:8080/GreenGuard/deleteByUserEmail',
+      url: 'http://192.168.1.26:8080/GreenGuard/deleteByUserEmail',
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     });
@@ -219,7 +225,11 @@ export default {
 
     confirmLogout() {
       this.$store.commit('setAuthenticated',false);
+      sessionStorage.removeItem("user")
       this.$router.push('/');
+    },
+    toDisplay(){
+      this.$router.push('/dummy');
     }
   },
   // async mounted() {
@@ -266,9 +276,20 @@ export default {
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 155px;
+  margin-right: 205px;
   
   transition: background-color 0.3s ease;
+}
+.explore-icon {
+  font-size: 40px; /* Adjust size if needed */
+  color: white;
+  margin-right: 15px; /* Space between icon and user info */
+  cursor: pointer;
+}
+
+.explore-icon:hover {
+  color: #007bff; /* Optional: Change color on hover */
+  /* You can customize hover effects here */
 }
 
 .upload-button:hover {

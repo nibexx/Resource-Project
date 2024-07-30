@@ -1,4 +1,5 @@
 <!-- <template>
+
   <div id="root">
       Header Component  
     <nav class="navBar">
@@ -712,42 +713,65 @@ export default {
 
       <!-- Filter Dropdowns -->
     
-      <div class="filters"> 
-        <!-- Category Filter -->
-         <div class="category">
-          <label for="categoryDropdown">
-            <i class="mdi mdi-filter-menu mr-3" style="color: white;"></i>  
-          </label>
-          <select id="categoryDropdown" v-model="selectedCategory" @change="applyFilters">
-            <option  value=""  >Filter Category</option>
-            <option class="dropdown" v-for="category in categories" :key="category">{{ category }}</option>
-          </select>
-        </div>
+<!-- Add a container for your dropdowns -->
+<div class="filters-container">
+  <!-- Category Dropdown -->
+  <div class="dropdown-wrapper">
+    <label for="categoryDropdown">
+      <i class="mdi mdi-filter-menu filter-icon"></i>
+    </label>
+    <select id="categoryDropdown" v-model="selectedCategory" @change="applyFilters">
+      <option value="">Filter Category</option>
+      <option class="dropdown" v-for="category in categories" :key="category">{{ category }}</option>
+    </select>
+  </div>
 
-        
-        <div class="district">
-         
-          <select id="districtDropdown" v-model="selectedDistrict" @change="applyFilters">
-            <option value=""  >Filter Districts</option>
-            <option class="dropdown" v-for="district in districts" :key="district">{{ district }}</option>
-          </select>
-        </div>
-      </div> 
+  <!-- District Dropdown -->
+  <div class="dropdown-wrapper">
+    <label for="categoryDropdown">
+      <i class="mdi mdi-filter-menu filter-icon"></i>
+    </label>
+    <select id="districtDropdown" v-model="selectedDistrict" @change="applyFilters">
+      <option value="">Filter Districts</option>
+      <option class="dropdown" v-for="district in districts" :key="district">{{ district }}</option>
+    </select>
+  </div>
+</div>
+
    
 
 
     <!-- Card Container Component -->
     <div class="card-container mb-3" v-motion-fade-visible>
-      <div class="card" v-for="(city, index) in cities" :key="index" :class="{ 'is-flipped': city.showDetails }" @click="toggleDetails(city)">
+      <div class="card " v-for="(city, index) in cities" :key="index" :class="{ 'is-flipped': city.showDetails }" @click="toggleDetails(city)">
        <!--Card Front -->
-         <div class="card-front">
+         <div class="card-front"> 
+          <!-- <div class="card-header" @click.stop="openModal(city.images)">
+    <v-carousel
+      :items="city.images"
+      hide-delimiters
+      hide-controls
+      :show-arrows="true"
+      :autoplay="true"
+      :cycle="true"
+      :height="215.02"
+    >
+      <v-carousel-item
+        v-for="(image, index) in city.images"
+        :key="index"
+        :src="'data:image/jpeg;base64,' + image"
+        :width="310.92"
+      >
+      </v-carousel-item>
+    </v-carousel>
+  </div> -->
           <div class="card-header" @click.stop="openModal(city.image)">
             <img :src="'data:image/jpeg;base64,'+city.image" :width="310.92" :height="215.02" />
           </div>
           <div class="card-body pb-0">
             <div class="d-flex justify-content-between">
               <h3>{{ city.saverName }}</h3>
-              <button class="location-btn mdi mdi-map-marker-radius"></button>
+              <button @click="navLocation(city.id)" class="location-btn mdi mdi-map-marker-radius"></button>
             </div>
             <p class="text-subtitle-1">Category: {{ city.category }}</p>
             <p class="text-subtitle-2 mb-2">District: {{ city.district }}</p>
@@ -798,7 +822,7 @@ export default {
       modalImage: '',
       selectedCategory: '',
       selectedDistrict: '',
-      categories: ['Lake', 'pond', 'Tree', 'Seashore', 'soil', 'Canal', 'Plantation', 'Garden'],
+      categories: ['Lake', 'Pond', 'Tree', 'Seashore', 'Soil', 'Canal', 'Plantation', 'Garden'],
       districts: [
         'Alappuzha', 'Ernakulam', 'Idukki', 'Kannur', 'Kasaragod', 'Kollam', 'Kottayam', 'Kozhikode',
         'Malappuram', 'Palakkad', 'Pathanamthitta', 'Thiruvananthapuram', 'Thrissur', 'Wayanad'
@@ -809,9 +833,12 @@ export default {
     this.fetchCities();
   },
   methods: {
+    navLocation(locationId) {
+  this.$router.push({ path: '/locations', query: { locationId } });
+},
     async fetchCities() {
       try {
-        const response = await axios.get('http://192.168.1.26:8080/GreenGuard/getAllGuardsArray');
+        const response = await axios.get('http://192.168.1.20:8080/GreenGuard/getAll');
         console.log(response.data);
         this.cities = response.data;
       } catch (error) {
@@ -858,7 +885,7 @@ export default {
 <style scoped>
 #root {
   background-color: #8BC34A; 
-  background-image: url('~@/assets/background10.jpg'); /* Adjust path if necessary */
+  background-image: url('~@/assets/b2.jpg'); /* Adjust path if necessary */
   background-size: cover; /* Adjust to cover the entire container */
   background-position: center; /* Center the background image */
   min-height: 100vh; /*
@@ -870,14 +897,57 @@ export default {
 
 
 /* Filters Styles */
-.filters {
+.filters-container {
   display: flex;
-  gap: 20px;
-  padding: 10px;
-  justify-content: flex-end; /* Align filters to the right */
-  /* background-color: #f5f5dc; */
-  z-index: 100;
-} 
+  gap: 20px; /* Adds space between the dropdowns */
+  margin-left: 1130px;
+  margin-top: 10px;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px; /* Adjust icon's horizontal position */
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensures clicks go through to the select */
+  color: #ffffff;
+  font-size: 1.2em;
+  z-index: 1; /* Ensure icon is above the dropdown */
+}
+
+select {
+  padding: 10px 30px; /* Adjust padding for the icon */
+  border-radius: 4px;
+  border: 2px solid #ffffff;
+  background-color: rgba(13, 13, 13, 0.201);
+  appearance: none; /* Remove default styling */
+  -webkit-appearance: none; /* Remove default styling for Safari */
+  -moz-appearance: none; /* Remove default styling for Firefox */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px;
+  color: #ffffff;
+  font-size: 1em;
+  width: 180px; /* Set a width for the dropdown */
+}
+
+.dropdown {
+  padding: 8px;
+  color: #333;
+  background-color: white;
+  border-bottom: 1px solid #ffffff;
+}
+
+.dropdown:last-child {
+  border-bottom: none; /* Remove border from last item */
+}
+
 /* .category label {
   display: flex;
   align-items: center;
@@ -885,48 +955,6 @@ export default {
   cursor: pointer;
   color: #000;
 } */
-.category {
-  position: relative;
-}
-
-.category label i {
-  font-size: 1.5rem;
-  
-}
-.category select {
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  width: 170px;
-}
-
-.district select {
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  width: 170px;
-}
-.category select,
-.district select {
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  width: 170px;
-  color: white; /* Set text color */
-  background-color: black; /* Set background color */
-}
-
-.category select option,
-.district select option {
-  color: black; /* Set text color for options */
-  background-color: white; /* Set background color for options */
-}
-
-/* Ensure the dropdown arrow color matches the text color */
-.category select::-ms-expand,
-.district select::-ms-expand {
-  color: white;
-}
 /* Card Container Styles */
 .card-container {
   padding: 0 1rem;
@@ -968,7 +996,7 @@ export default {
 }
 .card-back {
   transform: rotateY(180deg);
-  color: #000;
+  color: #030303;
   padding: 1rem;
 }
 .card.is-flipped {
