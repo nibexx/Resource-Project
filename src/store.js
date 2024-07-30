@@ -7,7 +7,7 @@ const store = createStore({
             id: null,
             name: '',
             email: '',
-        
+        baseUrl:'http://192.168.1.20:8080'
            
           },
           userData:JSON.parse(sessionStorage.getItem("user"))||"",
@@ -45,6 +45,9 @@ const store = createStore({
 
     },
     getters: {
+      getBaseUrl(state){
+        return state.baseUrl
+      },
       getUserData(state){
         return state.userData
       },
