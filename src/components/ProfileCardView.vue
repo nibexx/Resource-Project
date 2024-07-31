@@ -333,7 +333,7 @@ export default {
         <span class="emoji">&#128075;</span> Hi {{ userName }}!..
     </h1>
      <p style="text-align: center; " class="desc">Upload your amazing finds and contribute to our growing community of nature enthusiasts!&#127807;</p>
-     <v-btn  class="upload-btn">
+     <v-btn  class="upload-btn" @click="toUpload">
           <v-icon left>mdi-upload</v-icon> Upload Resource
         </v-btn>
     </div>
@@ -495,6 +495,9 @@ export default {
     this.fetchCards();
   },
   methods: {
+    toUpload(){
+      this.$router.push('/upload-new');
+    },
   async fetchCards() {
     try {
       const response = await axios.get(`http://192.168.1.20:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
