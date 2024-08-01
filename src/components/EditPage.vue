@@ -142,7 +142,7 @@ export default {
       password: this.newPassword,
     };
 
-        const response = await axios.put(`http://192.168.1.18:8080/UserReg/update/${this.userId}`, profileData);
+        const response = await axios.put(`http://192.168.1.30:8080/UserReg/update/${this.userId}`, profileData);
 
         if (response.status === 200) {
           this.$store.commit('setName', this.editUserName);
@@ -150,7 +150,7 @@ export default {
         }
            // If the password is being changed, update it
     if (this.isChangingPassword && this.newPassword) {
-      const passwordResponse = await axios.put(`http://192.168.1.18:8080/UserReg/updatePassword/${this.userId}`, passwordData);
+      const passwordResponse = await axios.put(`http://192.168.1.30:8080/UserReg/updatePassword/${this.userId}`, passwordData);
 
       // Check if the password update was successful
       if (passwordResponse.status === 200) {
@@ -173,7 +173,7 @@ export default {
 
     const response = await axios({
       method: 'delete',
-      url: 'http://192.168.1.18:8080/GreenGuard/deleteByUserEmail',
+      url: 'http://192.168.1.30:8080/GreenGuard/deleteByUserEmail',
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     });

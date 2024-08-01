@@ -452,7 +452,7 @@ export default {
 // id: 16,
 // image: "https://images.pexels.com/photos/709552/pexels-photo-709552.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 // latitude: "9.510174962668149",
-// longitude: "76.33385818426025",
+// longitude: "76.33385830426025",
 // saverName: "Aatish",
 // },
 // {category: "Plantation",
@@ -501,7 +501,7 @@ export default {
     },
   async fetchCards() {
     try {
-      const response = await axios.get(`http://192.168.1.18:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
+      const response = await axios.get(`http://192.168.1.30:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
       if (response.status >= 200 && response.status < 300) {
         console.log('backendResponse', response.data);
         this.cards = response.data;
@@ -517,7 +517,7 @@ export default {
   },
   async deleteCard(cardId) {
     try {
-      await axios.delete(`http://192.168.1.18:8080/GreenGuard/delete/${cardId}`);
+      await axios.delete(`http://192.168.1.30:8080/GreenGuard/delete/${cardId}`);
       this.cards = this.cards.filter(card => card.id !== cardId);
     } catch (error) {
       console.error('Error deleting card:', error);
@@ -545,7 +545,7 @@ export default {
   },
   async updateCard(formData) {
     try {
-      const response = await axios.put(`http://192.168.1.18:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
+      const response = await axios.put(`http://192.168.1.30:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -835,7 +835,7 @@ export default {
 }
 .name {
             text-align: center;
-            margin-top: 180px;
+            margin-top: 300px;
         }
 
         .emoji {
