@@ -172,7 +172,7 @@ export default {
             console.log(pair[0] + ': ' + pair[1])
           }
 
-          const response = await axios.post('http://192.168.1.26:8080/GreenGuard/save', formData, {
+          const response = await axios.post('http://192.168.1.18:8080/GreenGuard/save', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

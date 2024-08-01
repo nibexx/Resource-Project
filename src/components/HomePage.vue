@@ -2,7 +2,8 @@
   <section class="showcase" :class="{ active: isActive }">
     <header>
       <div class="logo-container">
-        <h2 class="logo">Green Guard </h2>
+        <img :src="earthImage" alt="Earth Image" class="logo-image">
+        <h2 class="logo">Green Guard</h2>
       </div>
       <div class="buttons">
         <button class="white-border" @click="toSign">Sign Up</button>
@@ -16,16 +17,14 @@
       <button class="white-border" @click="toSign">Sign Up</button>
       <button class="white-border" @click="toLogin">Login</button>
     </div>
-  
-    <video  :src="videoSource" type="video/mp4" muted loop autoplay></video>
+
+    <video :src="videoSource" type="video/mp4" muted loop autoplay></video>
     <div class="overlay"></div>
     <div class="text">
       <h3>Never Stop To</h3>
       <h3>Exploring The World</h3>
-      <p>Nature's beauty whispers in the wind, roars in the ocean's waves, and blooms in every petal. It holds the secrets of life in its silent forests and paints the sky with dreams. Embrace its wild grace; it is where the soul finds its truest reflection !</p>
-      <a @click="toDisplay">Explore</a>
-     
-
+      <p>Nature's beauty whispers in the wind, roars in the ocean's waves, and blooms in every petal. It holds the secrets of life in its silent forests and paints the sky with dreams. Embrace its wild grace; it is where the soul finds its truest reflection!</p>
+      <a @click="toDisplay">Explore Resources</a>
     </div>
     <ul class="social">
       <li><a href="https://www.instagram.com/"><img src="https://i.ibb.co/x7P24fL/facebook.png"></a></li>
@@ -33,19 +32,19 @@
       <li><a href="#"><img src="https://i.ibb.co/ySwtH4B/instagram.png"></a></li>
     </ul>
   </section>
-  
 </template>
 
- <script>
+<script>
 export default {
   data() {
     return {
       isActive: false,
-       videoSource: require('@/assets/5441677-hd_1920_1080_24fps.mp4')
-    }
+      videoSource: require('@/assets/video2_4k.mp4'),
+      earthImage: require('@/assets/earth.png') // Ensure the path is correct
+    };
   },
-    methods:{
-      toLogin() {
+  methods: {
+    toLogin() {
       this.$router.push("/login-page");
     },
     toSign() {
@@ -54,14 +53,12 @@ export default {
     toggleMenu1() {
       this.isActive = !this.isActive;
     },
-    toDisplay(){
+    toDisplay() {
       this.$router.push("/dummy");
     }
-    }
   }
-
-;
-</script> 
+};
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
@@ -91,10 +88,19 @@ header {
   align-items: center;
 }
 
-header .logo {
-  color: #fff;
+.logo-image {
+  width: 100px;
+  height: 55;
+  margin-right: 10px;
+}
+
+header .logo { 
+  background: linear-gradient(45deg, #4ab43f, #f0d560);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   cursor: pointer;
+
 }
 
 .buttons {
@@ -265,204 +271,3 @@ header .logo {
   }
 }
 </style>
-<!-- <template>
-  <div class="front-page">
-     Navigation Bar 
-    <nav class="navbar">
-   
-      <div class="logo">
-        <img src="@/assets/logo1.png" alt="Nature Friendly" />
-      </div>
-      
-      <ul class="nav-links">
-        <li><a href="#">Log In</a></li>
-        <li><a href="#">Sign Up</a></li>
-      </ul>
-    </nav>-->
-
-    <!-- Call to Action Section
-    <section class="call-to-action">
-     
-      <div class="background-video-container">
-        <video autoplay loop muted plays-inline class="background-video">
-          <source :src="videoSource" type="video/mp4"/>
-         
-        
-        </video>
-      </div>
-      <div class="content">
-        <h1>Welcome to Nature Friendly</h1>
-        <p>Discover the beauty of nature and join us in preserving our planet.</p>
-        <a href="#" class="btn">Learn More</a>
-      </div>
-    </section>
- -->
-    <!-- Description Section with Animations
-    <section class="description">
-      <div class="container">
-        <div class="description-text" v-scroll-reveal="{ delay: 200, scale: 0.5, duration: 800, distance: '50px' }">
-          <h2>About Nature Friendly</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod mauris quis aliquam dictum. Fusce in massa sed ex consectetur dapibus non eget odio.</p>
-          <p>Integer nec eros ligula. Sed id tellus vitae nunc varius vulputate vel et dolor. Mauris in est ut libero iaculis dictum. Phasellus quis libero id eros efficitur vulputate.</p>
-        </div>
-      </div>
-    </section>
-  </div>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-       videoSource: require('@/assets/5441677-hd_1920_1080_24fps.mp4')
-
-    };
-  }
-};
-</script>
-
-<style scoped>
-/* Navigation Bar Styles */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: black;
-  height: 78px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.logo img {
-  max-height: 40px;
-}
-
-.nav-links li {
-  display: inline-block;
-  margin-right: 20px;
-}
-
-.nav-links a {
-  color: white;
-  text-decoration: none;
-  padding: 5px 10px;
-  transition: outline 0.3s;
-}
-
-.nav-links a:hover {
-  outline: 3px solid #4CAF50;
-  border-radius: 16px;
-  background-color: #4CAF50;
-} -->
-
-<!-- .background-video-container {
-  width: 500px;
-  height: 100%;
- 
-} */
-.background-video-container {
-  max-width: 100%; /* Adjust this width as needed */
-  height: auto; /* Maintain aspect ratio */
-}
-
-.background-video {
-  width: 100%;
-  height: auto;
-}
-
-.call-to-action .content {
-  position: relative;
-  z-index: 1;
-}
-
-.call-to-action h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
-}
-
-.call-to-action p {
-  font-size: 18px;
-  margin-bottom: 30px;
-}
-
-.btn {
-  display: inline-block;
-  padding: 12px 24px;
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background-color 0.3s;
-}
-
-.btn:hover {
-  background-color: #45a049;
-}
-
-/* Description Section Styles */
-.description {
-  padding: 50px 20px;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.description-text {
-  text-align: center;
-}
-
-.description-text h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-.description-text p {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-</style> -->
-
-
-<!-- <template>
-    <h2>This is the Main Page</h2>
-    <button  class="home-button" type="button" @click="toUpload">Upload The Resources</button>
-    <div class="card-container">
-    <div v-for="(gal, index) in limitedGallery" :key="index" class="card">
-      <img :src="gal.image" alt="Gallery Image" class="card-image" />
-      <div class="card-content">
-        <h2 class="card-title">{{ gal.name }}</h2>
-        <p class="card-description">{{ gal.description }}</p>
-      </div>
-    </div>
-  </div>
-  <router-link to="/display-resorces" class="view-more">View More</router-link>
-    </template>
-  <script>
-  export default{
-      methods: {
-          toUpload(){
-              this.$router.push("/file-upload")
-          }   
-      }
-  }
-  </script> -->
-  <!-- <style> -->
-  <!-- /* .home-button {
-  background-color: blue; /* Set button background color to blue */
-  color: white; /* Set text color to white */
-  padding: 10px 20px; /* Add some padding */
-  border: none; /* Remove default button border */
-  border-radius: 5px; /* Add border radius */
-  cursor: pointer; /* Change cursor to pointer on hover */
-  transition: background-color 0.3s ease; /* Add transition effect */
-  margin-top: 60px; */ -->
-  
-<!-- }
-
-.home-button:hover {
-  background-color: rgb(79, 127, 231); /* Change button background color on hover */
-}
-</style> -->

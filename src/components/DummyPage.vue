@@ -838,7 +838,7 @@ export default {
 },
     async fetchCities() {
       try {
-        const response = await axios.get('http://192.168.1.20:8080/GreenGuard/getAll');
+        const response = await axios.get('http://192.168.1.18:8080/GreenGuard/getAll');
         console.log(response.data);
         this.cities = response.data;
       } catch (error) {

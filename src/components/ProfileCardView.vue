@@ -324,7 +324,8 @@ export default {
 </style> -->
  
 <template>
-  <div id="app1" class="container-fluid">
+  
+  <div id="app1" class="container-fluid body">
     <!-- <div v-if="cards.length === 0" class="add-card-icon" @click="toUpload">
       +
     </div> -->
@@ -500,7 +501,7 @@ export default {
     },
   async fetchCards() {
     try {
-      const response = await axios.get(`http://192.168.1.20:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
+      const response = await axios.get(`http://192.168.1.18:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
       if (response.status >= 200 && response.status < 300) {
         console.log('backendResponse', response.data);
         this.cards = response.data;
@@ -516,7 +517,7 @@ export default {
   },
   async deleteCard(cardId) {
     try {
-      await axios.delete(`http://192.168.1.20:8080/GreenGuard/delete/${cardId}`);
+      await axios.delete(`http://192.168.1.18:8080/GreenGuard/delete/${cardId}`);
       this.cards = this.cards.filter(card => card.id !== cardId);
     } catch (error) {
       console.error('Error deleting card:', error);
@@ -544,7 +545,7 @@ export default {
   },
   async updateCard(formData) {
     try {
-      const response = await axios.put(`http://192.168.1.20:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
+      const response = await axios.put(`http://192.168.1.18:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -822,6 +823,7 @@ export default {
 </script> -->
 
 <style scoped>
+
 .description {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -853,9 +855,10 @@ export default {
         }
 .desc{
   font-size: 28px;
+  color: black;
 }
 .upload-btn {
-    margin-left: 650px;
+    margin-left: 860px;
     margin-top: 20px;
     font-weight: bold;
     background-color: green;
