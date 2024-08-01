@@ -211,6 +211,7 @@ header .logo {
 
 .text a:hover {
   letter-spacing: 6px;
+  cursor: pointer;
 }
 
 .social {

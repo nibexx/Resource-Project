@@ -461,7 +461,7 @@ export default {
   max-width: 60rem;
   height: auto; /* Adjust height based on content */
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  box-shadow: 8px 8px 8px 8px rgba(0, 0, 0, 0.26);
   padding: 2rem;
   background-color: #ffffff;
   margin: 30px;
