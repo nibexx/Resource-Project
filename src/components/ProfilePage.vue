@@ -249,6 +249,7 @@ export default {
 
 
 <style scoped>
+
 .navbar {
   display: flex;
   justify-content: space-between;
