@@ -55,6 +55,7 @@ export default{
 
 .home-button:hover {
   background-color: rgb(79, 127, 231); /* Change button background color on hover */
+  
 }
 p{
   font-size: 18px;
