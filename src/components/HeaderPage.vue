@@ -20,14 +20,14 @@ export default {
     methods:{
         toSign() {
       console.log("Sign Up clicked");
-      this.$router.push('/login-page');
+      this.$router.push('/signup-page');
     },
     toLogin() {
       console.log("Login clicked");
-      this.$router.push('/signup-page');
+      this.$router.push('/login-page');
     },
     }
- 
+    
 }
 </script>
 
