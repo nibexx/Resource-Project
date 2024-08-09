@@ -47,9 +47,9 @@
               <h3>{{ city.saverName }}</h3>
               <button @click="navLocation(city.id)" class="location-btn mdi mdi-map-marker-radius"></button>
             </div>
-            <p class="text-subtitle-1">Category: {{ city.category }}</p>
-            <p class="text-subtitle-2 mb-2">District: {{ city.district }}</p>
-            <p>{{ shortenedDescription(city.description) }}</p>
+            <p class="text-subtitle-1 text-black">Category: {{ city.category }}</p>
+            <p class="text-subtitle-2 mb-2 text-black">District: {{ city.district }}</p>
+            <p class="text-black">{{ shortenedDescription(city.description) }}</p>
             <button class="btn py-1 mt-2 ps-0" @click.stop="toggleDetails(city)">
               {{ city.showDetails ? 'Show Less' : 'Read More' }}
             </button>
@@ -408,6 +408,10 @@ select {
 .close-btn .v-icon {
   font-size: 1.5rem;
   
+}
+
+.text-black{
+  font-weight: bolder;
 }
 
 </style>

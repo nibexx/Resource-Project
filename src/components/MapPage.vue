@@ -240,7 +240,3 @@ export default {
   cursor: not-allowed;
 }
 </style>
-
-
-
-
