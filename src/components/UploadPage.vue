@@ -1,7 +1,13 @@
 <template>
   <div class="background">
     <div class="card">
-      <h3>Upload Form</h3>
+      <h3>
+        Upload Form
+        <!-- Earth icon as a link to the homepage -->
+        <router-link to="/" class="earth-icon">
+          <v-icon>mdi-earth</v-icon>
+        </router-link>
+      </h3>
       <form>
         <v-text-field
           v-model="state.name"
@@ -21,15 +27,6 @@
           @blur="v$.name.$touch"
           @input="v$.name.$touch"
         ></v-text-field>
-        <!-- <v-text-field
-          v-model="state.category"
-          :counter="10"
-          :error-messages="v$.category.$errors.map(e => e.$message)"
-          label="Enter Category"
-          required
-          @blur="v$.category.$touch"
-          @input="v$.category.$touch"
-        ></v-text-field> -->
         <v-select
           v-model="state.category"
           :error-messages="v$.select.$errors.map(e => e.$message)"
@@ -59,7 +56,7 @@
           @blur="v$.description.$touch"
           @input="v$.description.$touch"
         ></v-textarea>
-  
+
         <v-file-input
           v-model="state.image"
           label="Image Upload"
@@ -69,7 +66,7 @@
           required
         ></v-file-input>
         <p v-if="state.fileName">Selected File: {{ state.fileName }}</p>
-  
+
         <v-btn class="me-4" @click="validateAndSubmit">
           Submit
         </v-btn>
@@ -94,7 +91,7 @@ const initialState = {
   email:'',
   select: null,
   image: null,
-  fileName: '' // Added to store the file name
+  fileName: ''
 }
 
 const state = reactive({
@@ -118,6 +115,7 @@ const items = [
   'Kannur',
   'Kasaragod'
 ]
+
 const categories = [
   "Pond",
   "Tree",
@@ -128,9 +126,7 @@ const categories = [
   "Garden",
   "Plantation",
   "Paddy Field",
-  
 ] 
-
 
 const rules = {
   name: { required },
@@ -166,28 +162,16 @@ async function validateAndSubmit() {
       formData.append('category', state.category);
       formData.append('description', state.description);
       formData.append('district', state.select);
-      formData.append('imageFile', state.image); // Append the Base64 string
+      formData.append('imageFile', state.image);
 
-      // Log formData to see what is being sent
-      for (var pair of formData.entries()) {
-        console.log(pair[0]+ ': ' + pair[1]); 
-      }
-
-      const response = await axios.post('http://192.168.1.18:8080/GreenGuard/save', formData, {
-  //       headers: {
-  //   'Content-Type': 'multipart/form-data'
-  // }
-      
-      });
+      const response = await axios.post('http://192.168.1.6:8080/GreenGuard/save', formData);
 
       if (response.status >= 200 || response.status < 300) {
         console.log('Response:', response.data);
         alert('Form submitted successfully!');
         Object.assign(state, initialState); // Reset the state to initial values
         v$.value.$reset(); // Reset validations
-}
-        // this.$router.push('/profile-page'); // Uncomment this if using within a Vue component
-      // multi part data aakumbol applicatiions/json use cheyyanda
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       if (error.response) {
@@ -207,17 +191,11 @@ function clear() {
 
 </script>
 
-
-
-
-
-
-   
-  <style>
+<style>
 .background {
   background-image: url('@/assets/forest3.jpg');
-  background-size: cover; /* Ensure the image covers the entire background */
-  background-position: center; /* Center the background image */
+  background-size: cover;
+  background-position: center;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -227,7 +205,7 @@ function clear() {
 .card {
   width: 100%;
   max-width: 60rem;
-  height: auto; /* Adjust height based on content */
+  height: auto;
   border-radius: 16px;
   box-shadow: 8px 8px 8px 8px rgba(0, 0, 0, 0.26);
   padding: 2rem;
@@ -235,65 +213,18 @@ function clear() {
   margin: 30px;
 }
 
-  
-  .form-control {
-    width: 100%;
-    padding: 15px;
-    margin-top: 20px;
-    margin-bottom: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  .btn {
-    background-color: #007bff;
-    color: white;
-    margin: 30px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .btn:hover {
-    background-color: #0056b3;
-  }
-  h3{
-    text-align: center;
-    /* text-decoration: underline; */
-    color: black;
-    margin-bottom: 20px;
-}
-.label{
-    float: left;
-  width: 150px; /* Adjust the width as needed */
-  margin-right: 20px; /* Add margin for spacing between labels */
-  margin-top: 8px;
-  font-weight: bold;
-}
-h1{
-    margin-top: 10px;
-}
-.uploaded-file {
-  display: flex;
-  
-  align-items: center;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 5px;
-  width:160px;
-  
+h3 {
+  text-align: center;
+  color: black;
+  margin-bottom: 20px;
 }
 
-.uploaded-file span {
-  flex: 1;
- 
-}
-
-.uploaded-file v-icon {
+.earth-icon {
   cursor: pointer;
+  font-size: 24px;
+  float: right;
+  margin-top: -6px;
+  color: inherit;
+  text-decoration: none;
 }
-  </style>
-  
+</style>

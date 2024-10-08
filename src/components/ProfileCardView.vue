@@ -30,6 +30,7 @@
 
           <v-card-item>
             <v-card-title>{{ card.title }}</v-card-title>
+            <v-icon @click="navigateHome" color="green" class="mdi mdi-earth"></v-icon>
           </v-card-item>
 
           <v-card-text>
@@ -120,9 +121,12 @@ export default {
     toUpload() {
       this.$router.push('/upload-new');
     },
+    navigateHome() {
+      this.$router.push('/locations'); // Navigate to the AllLocations page
+    },
     async fetchCards() {
       try {
-        const response = await axios.get(`http://192.168.1.18:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
+        const response = await axios.get(`http://192.168.1.6:8080/GreenGuard/getGuardsByUserId/${this.userId}`);
         if (response.status >= 200 && response.status < 300) {
           console.log('backendResponse', response.data);
           this.cards = response.data;
@@ -138,7 +142,7 @@ export default {
     },
     async deleteCard(cardId) {
       try {
-        await axios.delete(`http://192.168.1.18:8080/GreenGuard/delete/${cardId}`);
+        await axios.delete(`http://192.168.1.6:8080/GreenGuard/delete/${cardId}`);
         this.cards = this.cards.filter(card => card.id !== cardId);
       } catch (error) {
         console.error('Error deleting card:', error);
@@ -166,7 +170,7 @@ export default {
     },
     async updateCard(formData) {
       try {
-        const response = await axios.put(`http://192.168.1.18:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
+        const response = await axios.put(`http://192.168.1.6:8080/GreenGuard/edit/${this.selectedCard.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -281,82 +285,22 @@ export default {
 }
 
 .card {
-  background-color: white;
+  background:linear-gradient(rgb(147, 196, 212), rgb(119, 202, 119));
   border-radius: 8px;
-  box-shadow: 0 5px 10px black;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
-.card-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.card-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  justify-content: space-between;
-  color: black;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-title {
-  margin: 0;
-  font-size: 1.5rem;
-  color: black;
-}
-
-.title-divider {
-  margin: 10px 0;
-  border: none;
-  border-top: 1px solid #ddd;
-}
-
-.card-content p {
-  margin: 5px 0;
-  color: black;
-}
-
-.action-icons {
-  display: flex;
-  align-items: center;
-}
-
-.action-icons span {
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-.action-icons span:first-child {
-  margin-left: 0;
-}
-
-.delete {
-  color: brown;
-  font-size: 24px;
-}
-
-.edit {
-  color: green;
-  font-size: 24px;
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .modal {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -367,83 +311,12 @@ export default {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 800px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.modal-content h2 {
-  margin-top: 0;
-}
-
-.modal-content form {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-content label {
-  margin-bottom: 5px;
-}
-
-.modal-content input[type="text"],
-.modal-content textarea {
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 400px;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.modal-buttons button {
-  margin-left: 10px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.modal-buttons button[type="submit"] {
-  background-color: #007bff;
-  color: white;
-}
-
-.modal-buttons button[type="submit"]:hover {
-  background-color: #0056b3;
-}
-
-.modal-buttons button[type="button"] {
-  background-color: #6c757d;
-  color: white;
-}
-
-.modal-buttons button[type="button"]:hover {
-  background-color: #5a6268;
-}
-
-.add-card-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
-  background-color: rgb(22, 127, 22);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  cursor: pointer;
-}
-
-.add-card-icon:hover {
-  background-color: rgb(14, 83, 14);
-  color: white;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 </style>

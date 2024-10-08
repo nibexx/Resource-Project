@@ -1,6 +1,3 @@
-
-
-
 <template>
   <div id="map-container">
     <div class="search-bar me-4">
@@ -12,7 +9,7 @@
       <LMarker :lat-lng="markerPosition" v-if="markerPosition !== null">
         <LPopup>
           <div class="info-window">
-            <p>{{ infoWindowText }}</p>
+            <p class="text-black">{{ infoWindowText }}</p>
             <div v-if="!locationConfirmed">
               <button class="yes-button me-2"   @click="confirmLocation">Yes</button>
               <button class="no-button ms-2"  @click="cancelLocation">No</button>

@@ -93,6 +93,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 // import LocationManager from './components/LocationManager.vue';
 
 const routes = [
+  
   {
     path: '/',
     component: () => import('./components/HomePage.vue')
@@ -102,7 +103,7 @@ const routes = [
     component: () => import('./components/ProfilePage.vue')
   },
   {
-    path: '/display-resources',
+    path: '/display-page',
     component: () => import('./components/DisplayPage.vue')
   },
   {
@@ -124,6 +125,7 @@ const routes = [
   {
     path: '/edit-page',
     component: () => import('./components/EditPage.vue')
+  
   },
 
     {       path: '/locations',
@@ -141,6 +143,12 @@ const routes = [
   
     component: () => import('./components/UploadNewDummy.vue')
   },
+
+  {
+    path: '/card-view',
+    component: () => import('./components/ProfileCardView.vue')
+  },
+  
   
 
 ];

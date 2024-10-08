@@ -172,7 +172,7 @@ export default {
             console.log(pair[0] + ': ' + pair[1])
           }
 
-          const response = await axios.post('http://192.168.1.18:8080/GreenGuard/save', formData, {
+          const response = await axios.post('http://192.168.1.6:8080/GreenGuard/save', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -336,7 +336,7 @@ h1 {
 
 .success-message {
   color: green;
-  font-size: 18px;
+  font-size: 5px;
   margin: 10px 0;
 }
 

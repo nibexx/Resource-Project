@@ -99,8 +99,6 @@ header .logo {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  cursor: pointer;
-
 }
 
 .buttons {

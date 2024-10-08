@@ -5,11 +5,8 @@
         <p>
           "Adopt the pace of nature: her secret is patience.<br />
           Nature always wears the colors of the spirit."<br>
-          
-          <b >-Ralph Waldo Emerson</b>
+          <b>-Ralph Waldo Emerson</b>
         </p>
-        
-        
       </div>
 
       <div class="container">
@@ -20,33 +17,24 @@
           rounded="lg"
         >
           <h4 class="text-center mb-4">Login Form</h4>
-          <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+          <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
           <v-text-field
             v-model="email"
-            :rules="emailRules"
             density="compact"
             placeholder="Email address"
             prepend-inner-icon="mdi-email-outline"
             variant="outlined"
             :error-messages="emailErrors"
+            class="input-field"
           ></v-text-field>
 
-          <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+          <div class="text-subtitle-1 text-medium-emphasis password-label">
             Password
-            <!-- <a
-              class="text-caption text-decoration-none text-green"
-              href="#"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Forgot login password?
-            </a> -->
           </div>
 
           <v-text-field
             v-model="password"
-            :rules="passwordRules"
             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
             :type="visible ? 'text' : 'password'"
             density="compact"
@@ -55,6 +43,7 @@
             variant="outlined"
             :error-messages="passwordErrors"
             @click:append-inner="visible = !visible"
+            class="input-field"
           ></v-text-field>
 
           <v-btn
@@ -94,19 +83,7 @@ export default {
       visible: false,
       emailErrors: [],
       passwordErrors: [],
-      
     };
-  },
-  computed: {
-    emailRules() {
-      return [(v) => !!v || 'Email is required', (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid'];
-    },
-    passwordRules() {
-  return [
-    (v) => !!v || "Password is required",
-    (v) => (v && v.length >= 8) || "Password must be at least 8 characters long"
-  ];
-},
   },
   methods: {
     async validateForm() {
@@ -126,27 +103,27 @@ export default {
       if (!this.emailErrors.length && !this.passwordErrors.length) {
         console.log('Form is valid! Submitting...');
         try {
-          const response = await axios.post('http://192.168.1.18:8080/UserReg/login', {
-            "email": this.email,
-            "password": this.password,
+          const response = await axios.post('http://192.168.1.6:8080/UserReg/login', {
+            email: this.email,
+            password: this.password,
           });
-          if ((response.status === 200) || (response.status < 300)) {
+          if (response.status === 200 || response.status < 300) {
             console.log(response.data);
-            this.$store.commit('setAuthenticated',true);
+            this.$store.commit('setAuthenticated', true);
             console.log('Success');
-            sessionStorage.setItem("user",JSON.stringify(response.data))
-            this.$store.commit('setUserData',response.data);
-            this.$store.commit('setId',response.data.id);
-            this.$store.commit('setName',response.data.name);
-            this.$store.commit('setEmail',response.data.email);
+            sessionStorage.setItem('user', JSON.stringify(response.data));
+            this.$store.commit('setUserData', response.data);
+            this.$store.commit('setId', response.data.id);
+            this.$store.commit('setName', response.data.name);
+            this.$store.commit('setEmail', response.data.email);
             this.$router.push('/profile-page');
           }
         } catch (error) {
           console.error(error);
-          alert("Invalid UserName or Password");
-          
+          alert('Invalid UserName or Password');
         }
-      }    },
+      }
+    },
     toSign() {
       this.$router.push('/signup-page');
     },
@@ -159,15 +136,17 @@ export default {
   cursor: pointer;
 }
 .custom-button {
-  background-color: #b6ecb6; /* Light green color */
-  color: white; /* Text color */
+  background-color: #008000; /* Light green color */
+  color: white !important; /* Text color */
+  margin-top: 30px;
+  width: 100px; /* Adjusted to a fixed width */
 }
 
-.custom-button:hover {
-  background-color: #008000; /* Green color */
-  color: white !important; 
-  
+.input-field {
+  width: 382px; /* Matches the width of the button */
+  margin-top: 10px; /* Space above the password input field */
 }
+
 .background {
   background-image: url('@/assets/forest3.jpg');
   background-size: cover; /* Ensure the image covers the entire background */
@@ -197,7 +176,7 @@ p {
   text-align: left;
   margin-left: 60px;
 }
-b{
+b {
   margin-left: 240px;
 }
 .container {
@@ -209,7 +188,13 @@ b{
 .card {
   width: 100%;
   max-width: 448px;
+  padding: 16px; /* Added padding for consistent spacing */
 }
+
+.password-label {
+  margin-top: 20px; /* Space above the 'Password' label */
+}
+
 @media (max-width: 400px) {
   .quote {
     display: none;

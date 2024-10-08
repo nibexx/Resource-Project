@@ -4,8 +4,7 @@
     <nav class="navBar">
       <h5 class="nav-heading">Natural</h5>
       <div class="nav-buttons">
-        <button class="white-border" @click="toSign">Sign Up</button>
-        <button class="white-border" @click="toLogin">Login</button>
+        <button class="white-border" @click="toLogout">Logout</button>
       </div>
     </nav>
 
@@ -44,8 +43,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
   <footer-page></footer-page>
 </template>
@@ -53,6 +50,8 @@
 <script>
 import axios from 'axios';
 import FooterPage from './FooterPage.vue';
+
+
 export default {
   data() {
     return {
@@ -70,20 +69,17 @@ export default {
   methods: {
     async fetchCities() {
       try {
-      const response = await axios.get ('http://192.168.1.18:8080/GreenGuard/getAll');
+        const response = await axios.get('http://192.168.1.6:8080/GreenGuard/getAll');
         console.log(response.data);
         this.cities = response.data;
       } catch (error) {
         console.error('Error fetching cities:', error);
       }
     },
-    toSign() {
-      // Logic for Sign Up button
-      console.log("Sign Up clicked");
-    },
-    toLogin() {
-      // Logic for Login button
-      console.log("Login clicked");
+    toLogout() {
+      // Logic for Logout button
+      console.log("Logout clicked");
+      this.$router.push('/login-page'); // Navigate to LoginPage.vue
     },
     toggleDetails(city) {
       // Flip the card by toggling showDetails property
@@ -109,9 +105,6 @@ export default {
   }
 };
 </script>
-
-
-
 
 <style scoped>
 /* Header Styles */
@@ -193,12 +186,12 @@ export default {
   transform: rotateY(0deg);
 }
 .card-back {
-  transform: rotateY(180deg);
+  transform: rotateY(50deg);
   color: #000;
   padding: 1rem;
 }
 .card.is-flipped {
-  transform: rotateY(180deg);
+  transform: rotateY(50deg);
 }
 .card-header {
   aspect-ratio: 16/12;
@@ -338,5 +331,3 @@ footer a:hover {
   color: #fff;
 }
 </style>
-
-

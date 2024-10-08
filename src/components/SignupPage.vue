@@ -1,15 +1,19 @@
-
 <template>
   <div class="background">
+    <div class="logo-container">
+      <!-- Direct link to the homepage -->
+      <a href="/">
+        <img :src="logo" alt="Home" class="logo-image">
+      </a>
+    </div>
     <div class="content">
       <div class="quote">
         <p>
           "Adopt the pace of nature: her secret is patience.<br />
           Nature always wears the colors of the spirit."<br>
-          <b >-Ralph Waldo Emerson</b>
+          <b>-Ralph Waldo Emerson</b>
         </p>
       </div>
-
       <div class="container">
         <v-card class="mx-auto mt-4 ml-3 mr-3 text-center custom-card" max-width="450" title="User Registration">
           <v-form ref="form" v-model="formValid" @submit.prevent="validateForm">
@@ -26,7 +30,6 @@
                   :rules="nameRules"
                   required
                 ></v-text-field>
-
                 <v-text-field
                   v-model="email"
                   color="black"
@@ -38,7 +41,6 @@
                   :rules="emailRules"
                   required
                 ></v-text-field>
-
                 <v-text-field
                   v-model="password"
                   color="black"
@@ -52,28 +54,33 @@
                   @click:append-inner="visible = !visible"
                   required
                 ></v-text-field>
-
-                <v-checkbox v-model="terms" color="secondary" :rules="termsRules">
-                  <template v-slot:label>
-                    <span>I agree to <a href="#" @click.prevent="showTerms" class="view-more">site terms and conditions</a></span>
-                  </template>
-                </v-checkbox>
+                <div class="checkbox-container">
+                  <v-checkbox v-model="terms" color="secondary" :rules="termsRules">
+                    <template v-slot:label>
+                      <span>I agree to <a href="#" @click.prevent="showTerms" class="view-more">terms of use</a></span>
+                    </template>
+                  </v-checkbox>
+                  <v-messages v-if="!terms && showTermsError" color="red" class="error-messages">
+                    {{ termsError }}
+                  </v-messages>
+                </div>
               </v-container>
             </keep-alive>
             <v-divider></v-divider>
-
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn type="submit" class="btn" color="success">
+              <v-btn type="submit" class="btn" color="success" :disabled="registrationInProgress">
                 Complete Registration
                 <v-icon icon="mdi-chevron-right" end></v-icon>
               </v-btn>
             </v-card-actions>
+            <v-card-text class="login-container">
+              <p class="text-black exist-acc">Already have an account? <router-link to="/login-page" class="login-link-text">Login here</router-link></p>
+            </v-card-text>
           </v-form>
         </v-card>
       </div>
     </div>
-
     <v-dialog v-model="termsDialog" max-width="700px">
       <v-card>
         <v-card-title class="headline">Terms and Conditions</v-card-title>
@@ -101,25 +108,39 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      logo: require('@/assets/earth.png'), // Use require to load the image
       first: null,
       email: null,
       password: null,
       terms: false,
       formValid: false,
       visible: false,
-      termsDialog: false
+      termsDialog: false,
+      termsError: "You must agree to the terms and conditions",
+      showTermsError: false,
+      registrationInProgress: false, // New property to track registration status
     };
   },
   methods: {
     async validateForm() {
+      this.showTermsError = !this.terms; // Show error if terms not checked
+
+      if (!this.terms) {
+        this.$refs.form.validate();
+        return;
+      }
+
+      this.registrationInProgress = true; // Disable the button after form submission
+
       try {
         if (await this.$refs.form.validate()) {
           console.log("going to backend");
-          const response = await axios.post('http://192.168.1.18:8080/UserReg/reg', {
+          const response = await axios.post('http://192.168.1.6:8080/UserReg/reg', {
             "name": this.first,
             "email": this.email,
             "password": this.password
           });
+
           if ((response.status === 200) || (response.status < 300)) {
             console.log(response.data);
             this.$router.push('/login-page');
@@ -128,6 +149,8 @@ export default {
       } catch (error) {
         console.error('Error fetching user details:', error);
         alert('Error fetching user details: ' + error.message);
+      } finally {
+        this.registrationInProgress = false; // Re-enable the button if an error occurs
       }
     },
     showTerms() {
@@ -172,7 +195,7 @@ export default {
   width: 100%;
   border-radius: 16px;
 }
-.btn:hover{
+.btn:hover {
   background-color: rgb(192, 242, 176);
   color: black !important;
 }
@@ -180,6 +203,7 @@ export default {
   color: blue;
   text-decoration: underline;
   cursor: pointer;
+  height: 30px;
 }
 .background {
   background-image: url('@/assets/forest3.jpg');
@@ -189,6 +213,17 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+.logo-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+.logo-image {
+  width: 100px;
+  height: 55px;
+  margin-right: 10px;
 }
 .content {
   display: flex;
@@ -230,12 +265,33 @@ b {
   padding-left: 10px;
   margin-left: 20px;
 }
-.success{
+.success {
   color: green;
-
 }
-.success:hover{
+.success:hover {
   color: white;
   background-color: rgb(63, 132, 63);
+}
+.error-messages {
+  font-size: 12px;
+  margin-top: 5px;
+}
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 0;
+}
+.login-link {
+  text-align: center;
+}
+.login-link-text {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: medium;
+}
+.exist-acc{
+  font-size: medium;
 }
 </style>

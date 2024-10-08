@@ -176,7 +176,7 @@ export default {
       password: this.newPassword,
     };
 
-        const response = await axios.put(`http://192.168.1.18:8080/UserReg/update/${this.userId}`, profileData);
+        const response = await axios.put(`http://192.168.1.6:8080/UserReg/update/${this.userId}`, profileData);
 
         if (response.status === 200) {
           this.$store.commit('setName', this.editUserName);
@@ -184,7 +184,7 @@ export default {
         }
            // If the password is being changed, update it
     if (this.isChangingPassword && this.newPassword) {
-      const passwordResponse = await axios.put(`http://192.168.1.18:8080/UserReg/updatePassword/${this.userId}`, passwordData);
+      const passwordResponse = await axios.put(`http://192.168.1.6:8080/UserReg/updatePassword/${this.userId}`, passwordData);
 
       // Check if the password update was successful
       if (passwordResponse.status === 200) {
@@ -207,7 +207,7 @@ export default {
 
     const response = await axios({
       method: 'delete',
-      url: 'http://192.168.1.18:8080/GreenGuard/deleteByUserEmail',
+      url: 'http://192.168.1.6:8080/GreenGuard/deleteByUserEmail',
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     });
@@ -1538,7 +1538,7 @@ export default {
   color: red;
 } -->
 <!-- .spin-on{
-  background-color: rgb(18, 88, 19); /* Background white for contrast with black text */
+  background-color: rgb(5, 88, 19); /* Background white for contrast with black text */
     color: white; /* Set content color to black */
     margin: 10px;
     padding: 5px 10px;
@@ -1591,7 +1591,7 @@ export default {
 
 } -->
 <!-- .background{
-  /* background-image: linear-gradient(45deg, rgb(18, 88, 19),rgb(49,138,57)); */
+  /* background-image: linear-gradient(45deg, rgb(5, 88, 19),rgb(49,138,57)); */
   background-image: url('@/assets/forest3.jpg');
   /* background-size: cover; /* Ensure the image covers the entire background */
   /* background-position: center; Center the background image */ 
@@ -1636,7 +1636,7 @@ export default {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     /* background-color: rgb(48, 9, 139); Maintain the same background color on hover */
     /* color: white; Maintain the same text color on hover */
-    /* border: 2px solid rgb(18, 2, 123); Maintain the same border color on hover */
+    /* border: 2px solid rgb(5, 2, 123); Maintain the same border color on hover */
     /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); Maintain the same box shadow on hover */
 } 
 .button2 {
