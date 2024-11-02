@@ -1,31 +1,36 @@
 <template>
   <div class="background">
     <div v-if="!isFlag" class="card">
-      <h3>Upload Form</h3>
+      <h3 style="color: white;">Upload Form</h3>
       <form>
         <v-text-field
           v-model="state.name"
           :counter="10"
           :error-messages="v$.name.$errors.map(e => e.$message)"
-          label="Name"
+          placeholder='Name'
+          
           required
           @blur="v$.name.$touch"
           @input="v$.name.$touch"
+          
         ></v-text-field>
         <v-text-field
           v-model="state.email"
           :counter="10"
           :error-messages="v$.email.$errors.map(e => e.$message)"
-          label="Email"
+          placeholder='Email'
+          
           required
           @blur="v$.email.$touch"
           @input="v$.email.$touch"
+          
         ></v-text-field>
         <v-select
           v-model="state.category"
           :error-messages="v$.category.$errors.map(e => e.$message)"
           :items="categories"
           label="Select Category"
+          
           required
           @blur="v$.category.$touch"
           @change="v$.category.$touch"
@@ -50,12 +55,13 @@
           @input="v$.description.$touch"
         ></v-textarea>
         <div>
-          <v-btn class="me-4 mb-4" @click="addLocation">
+          <!-- Conditionally display the 'Add Location' button -->
+          <v-btn v-if="!locationAdded" class="me-4 mb-4" @click="addLocation" >
             Add Location
           </v-btn>
           <span v-if="locationAdded" class="success-message">
-            <v-icon>mdi-check-circle</v-icon> Location Added Successfully
-            <v-btn class="change-location-btn" text small @click="addLocation">
+            <v-icon>mdi-check-circle</v-icon> <h6>Location Added Successfully</h6>
+            <v-btn class="change-location-btn" text small @click="addLocation" >
               Change Location
             </v-btn>
           </span>
@@ -66,20 +72,34 @@
           prepend-icon="mdi-camera"
           variant="filled"
           multiple
+          :disabled="!locationAdded"
           @change="handleFileUpload"
           required
+          ref="uploadBtn"
         ></v-file-input>
         <p v-if="state.fileNames.length">Selected Files: {{ state.fileNames.join(', ') }}</p>
-        <v-btn class="me-4" @click="validateAndSubmit">
-          Submit
-        </v-btn>
-        <v-btn @click="clear">
+        <v-btn class="me-4" @click="clear" style="background-color: darkgreen; color: white; margin-top: 20px; margin-left: 640px;">
           Clear All
         </v-btn>
+        <v-btn class="me-4" @click="validateAndSubmit" style="background-color: darkgreen; color: white; margin-top: 20px; ">
+          Submit
+        </v-btn>
+        <!-- Success message popup -->
+        <v-dialog v-model="showSuccessPopup" max-width="290">
+          <v-card>
+            <v-card-title class="headline">Success</v-card-title>
+            <v-card-text>Your form has been submitted successfully!</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" text @click="showSuccessPopup = false">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </form>
     </div>
     <location-manager v-else @back="handleBack"></location-manager>
   </div>
+
 </template>
 
 <script>
@@ -134,7 +154,8 @@ export default {
         "Plantation",
         "Paddy Field"
       ],
-      v$: null
+      v$: null,
+      showSuccessPopup: false // New state for success popup
     }
   },
   computed: {
@@ -172,7 +193,7 @@ export default {
             console.log(pair[0] + ': ' + pair[1])
           }
 
-          const response = await axios.post('http://192.168.1.6:8080/GreenGuard/save', formData, {
+          const response = await axios.post('http://192.168.1.31:8080/GreenGuard/save', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -180,7 +201,7 @@ export default {
 
           if (response.status >= 200 && response.status < 300) {
             console.log('Response:', response.data)
-            alert('Form submitted successfully!')
+            this.showSuccessPopup = true // Show success popup
             Object.assign(this.state, {
               name: '',
               category: '',
@@ -232,6 +253,9 @@ export default {
       this.state.latitude = location.lat
       this.state.longitude = location.lng
       this.state.locationAdded = true
+      this.$nextTick(() => {
+        this.$refs.uploadBtn.$el.focus()
+      })
       console.log(`Latitude: ${location.lat}, Longitude: ${location.lng}`)
     }
   },
@@ -266,8 +290,9 @@ export default {
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: #3d523f;
   margin: 30px;
+  color: white;
 }
 
 .form-control {
@@ -301,46 +326,53 @@ h3 {
 }
 
 .label {
-    float: left;
-    width: 150px;
-    margin-right: 20px;
-    margin-top: 8px;
-    font-weight: bold;
+  float: left;
+  width: 150px;
+  margin-right: 20px;
+  margin-top: 8px;
+  font-weight: bold;
 }
 
 h1 {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .uploaded-file {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-radius: 5px;
-    width: 900px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  width: 900px;
 }
 
 .uploaded-file span {
-    flex: 1;
+  flex: 1;
 }
 
 .uploaded-file v-icon {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .but {
-    color: white;
-    background-color: blue;
+  color: white;
+  background-color: blue;
 }
 
 .success-message {
-  color: green;
-  font-size: 5px;
+  display: flex;
+  align-items: center;
+  color: greenyellow;
+  font-size: 14px;
   margin: 10px 0;
+}
+
+.success-message v-icon {
+  margin-right: 8px;
 }
 
 .change-location-btn {
   color: blue;
+  margin-left: 10px;
 }
 </style>

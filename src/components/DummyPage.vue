@@ -1,7 +1,7 @@
 <template>
   <div id="root">
     <div class="header-container">
-      <h1>NATURAL</h1>
+      <h1 class="logo">GREEN GUARD</h1>
       <div class="user-actions">
         <button @click="goToProfile" class="btn">
           <img :src="profileIcon" alt="Profile Icon" class="profile-icon" />
@@ -37,7 +37,7 @@
         :key="index"
       >
         <!-- Card Front -->
-        <div class="card-front">
+        <div class="card-front" v-if="!flippedCards[index]">
           <div class="card-header">
             <img :src="'data:image/jpeg;base64,' + city.image" alt="City Image" />
           </div>
@@ -46,6 +46,16 @@
             <p>Category: {{ city.category }}</p>
             <p>District: {{ city.district }}</p>
             <p>{{ shortenedDescription(city.description) }}</p>
+            <a @click="flipCard(index)" class="read-more-link">Read More</a>
+          </div>
+        </div>
+
+        <!-- Card Back -->
+        <div class="card-back" v-if="flippedCards[index]">
+          <div class="card-body">
+            <h3>{{ city.saverName }}</h3>
+            <p>{{ city.description }}</p>
+            <a @click="flipCard(index)" class="show-less-link">Show Less</a>
           </div>
         </div>
       </div>
@@ -66,6 +76,7 @@ export default {
       logoutIcon: require('@/assets/logout.png'),
       categories: ['Lake', 'Pond', 'Tree', 'Seashore', 'Soil', 'Canal', 'Plantation', 'Garden', 'River'],
       districts: ['Alappuzha', 'Ernakulam', 'Idukki', 'Kannur', 'Kasaragod', 'Kollam', 'Kottayam', 'Kozhikode', 'Malappuram', 'Palakkad', 'Pathanamthitta', 'Thiruvananthapuram', 'Thrissur', 'Wayanad'],
+      flippedCards: [] // To track which cards are flipped
     };
   },
   created() {
@@ -83,8 +94,10 @@ export default {
   methods: {
     async fetchCities() {
       try {
-        const response = await axios.get('http://192.168.1.6:8080/GreenGuard/getAll');
+        const response = await axios.get('http://192.168.1.31:8080/GreenGuard/getAll');
         this.allCities = response.data;
+        // Initialize flippedCards with 'false' for each city
+        this.flippedCards = this.allCities.map(() => false);
       } catch (error) {
         console.error('Error fetching cities:', error);
       }
@@ -97,6 +110,10 @@ export default {
         return description;
       }
     },
+    flipCard(index) {
+      // Directly modify the flippedCards array in Vue 3
+      this.flippedCards[index] = !this.flippedCards[index];
+    },
     goToProfile() {
       this.$router.push('/profile-page');
     },
@@ -108,6 +125,7 @@ export default {
 </script>
 
 <style scoped>
+
 #root {
   background-color: #8BC34A;
   background-image: url('~@/assets/b2.jpg');
@@ -115,7 +133,12 @@ export default {
   background-position: center;
   min-height: 100vh;
 }
-
+.logo{
+  background: linear-gradient(45deg, #1fec08, #fad325);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
 .header-container {
   display: flex;
   justify-content: space-between;
@@ -192,16 +215,13 @@ export default {
   width: 310.92px;
   background: #fff;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  border-radius: 15px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-}
-
-.card-front {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  font-size: 16px; /* Set a consistent font size */
+  color: black; /* Ensure font color is black */
+  transition: all 0.3s ease; /* Smooth transitions */
 }
 
 .card-header {
@@ -221,7 +241,31 @@ export default {
   padding: 10px;
   background-color: #fff;
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column; /* Arrange content vertically */
+  justify-content: space-between; /* Push content to top and bottom */
+  
 }
+.card-body p {
+  overflow: hidden;
+  white-space: nowrap; /* Prevents line breaks */
+  text-overflow: ellipsis; /* Shows ellipsis for overflow */
+}
+
+
+.show-less-link {
+  cursor: pointer;
+  color: #4CAF50;
+  text-decoration: underline;
+}
+.read-more-link {
+  cursor: pointer;
+  color: #4CAF50;
+  text-decoration: underline;
+  align-self: flex-end; /* Aligns the link to the bottom */
+  margin-top: auto; /* Pushes the link to the bottom */
+}
+
 
 @media (max-width: 768px) {
   .card-container {

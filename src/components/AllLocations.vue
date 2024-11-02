@@ -23,7 +23,7 @@ export default {
   methods: {
     async fetchMarkers() {
       try {
-        const response = await axios.get('http://192.168.1.6:8080/GreenGuard/getAllImagesAndLocations');
+        const response = await axios.get('http://192.168.1.31:8080/GreenGuard/getAllImagesAndLocations');
         console.log(response.data, "loc", this.locationId);
         const markers = response.data;
         

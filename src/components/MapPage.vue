@@ -6,14 +6,10 @@
     </div>
     <LMap :zoom="zoom" :center="center" style="height: 100vh; width: 100vw;" @click="handleMapClick">
       <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <LMarker :lat-lng="markerPosition" v-if="markerPosition !== null">
+      <LMarker :lat-lng="markerPosition" v-if="markerPosition !== null" @click="selectLocation">
         <LPopup>
           <div class="info-window">
             <p class="text-black">{{ infoWindowText }}</p>
-            <div v-if="!locationConfirmed">
-              <button class="yes-button me-2"   @click="confirmLocation">Yes</button>
-              <button class="no-button ms-2"  @click="cancelLocation">No</button>
-            </div>
           </div>
         </LPopup>
       </LMarker>
@@ -36,29 +32,23 @@ import { useRouter } from 'vue-router';
 import { LMap, LTileLayer, LMarker, LPopup } from 'vue3-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-// import { Icon } from 'leaflet';
-// import '@mdi/font/css/materialdesignicons.css';
 
 export default {
-  
   components: {
     LMap,
     LTileLayer,
     LMarker,
     LPopup
   },
-  emits: ['location-confirmed'], // Define the emitted event
-  // setup() {
-    setup() {
-      const store = useStore();
-      const router = useRouter();
+  setup() {
+    const store = useStore();
+    const router = useRouter();
     const zoom = ref(20); // Adjusted default zoom level for street-level view
     const center = ref([9.4981, 76.3388]); // Default center coordinates
     const searchQuery = ref('');
     const markerPosition = ref(null); // To store the marker position
     const locationConfirmed = ref(false); // Flag to track if location is confirmed
-    const infoWindowText = ref(''); // Text to display in the info window
-
+    const infoWindowText = ref('Click on the marker to confirm location'); // Updated info text
 
     const searchLocation = async () => {
       const provider = new OpenStreetMapProvider();
@@ -73,45 +63,26 @@ export default {
     };
 
     const handleMapClick = (event) => {
-      if (!locationConfirmed.value) {
-        markerPosition.value = event.latlng;
-        infoWindowText.value = 'Is this your location?';
+      markerPosition.value = event.latlng;
+      infoWindowText.value = 'Location marked. Click the marker to confirm.';
+      locationConfirmed.value = true; // Automatically enable the upload button when a location is marked
+    };
+
+    const selectLocation = () => {
+      if (markerPosition.value) {
+        infoWindowText.value = `Your location: Latitude ${markerPosition.value.lat}, Longitude ${markerPosition.value.lng}`;
+        sessionStorage.setItem("location", JSON.stringify({"lat": markerPosition.value.lat, "long": markerPosition.value.lng}));
+        store.commit('setLatitude', markerPosition.value.lat);
+        store.commit('setLongitude', markerPosition.value.lng);
       }
-    };
-    const confirmLocation = () => {
-      infoWindowText.value = `Your location: Latitude ${markerPosition.value.lat}, Longitude ${markerPosition.value.lng}`;
-      locationConfirmed.value = true;
-     console.log(markerPosition.value.lat);
-     console.log(markerPosition.value.lng);
-     sessionStorage.setItem("location", JSON.stringify({"lat":markerPosition.value.lat,"long":markerPosition.value.lng}));
-       store.commit('setLatitude',markerPosition.value.lat);
-       store.commit('setLongitude',markerPosition.value.lng);
-      // emit('location-confirmed', { lat: markerPosition.value.lat, lng: markerPosition.value.lng });
-    };
-    // const confirmLocation = () => {
-    //   // Display latitude and longitude of marker position
-    //   infoWindowText.value = `Your location: Latitude ${markerPosition.value.lat}, Longitude ${markerPosition.value.lng}`;
-    //   locationConfirmed.value = true;
-    // };
-    const cancelLocation = () => {
-      markerPosition.value = null; // Clear marker position if user cancels
-      infoWindowText.value = ''; // Clear info window text
     };
 
     const uploadResource = () => {
       // Implement the upload logic here
       console.log('Upload resource clicked');
-      
       router.push('/upload-new'); // Navigate to /upload-new route
     };
-    // Define custom marker icon for center
-    // const centerIcon = new Icon({
-    //   iconUrl: require('@/assets/marker-icon-blue.png').default,
-    //   iconSize: [25, 41],
-    //   iconAnchor: [12, 41],
-    //   popupAnchor: [1, -34],
-    //   tooltipAnchor: [16, -28],
-    // });
+
     return {
       zoom,
       center,
@@ -119,16 +90,14 @@ export default {
       searchLocation,
       markerPosition,
       handleMapClick,
-      confirmLocation,
-      cancelLocation,
+      selectLocation,
       infoWindowText,
       locationConfirmed,
       uploadResource
-      // centerIcon,
     };
   }
 };
-</script>  
+</script>
 
 <style>
 .autocomplete-list {
@@ -149,8 +118,8 @@ export default {
 
 .autocomplete-list li:hover {
   background-color: #e9e9e9;
-  
 }
+
 #map-container {
   height: 100vh;
   width: 100vw;
@@ -191,33 +160,7 @@ export default {
 .info-window p {
   margin-bottom: 10px;
 }
-.no-button
-.yes-button
-.info-window button {
-  margin: 5px;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  
-  border: 1px solid gray;
-}
 
-/* .info-window button:hover {
-  background-color: #f0f0f0;
-} */
-.yes-button:hover{
- background-color: blue;
- color: white;
- padding: 5px;
- border-radius: 10px;
-}
-.no-button:hover{
- background-color: red;
- color: white;
- padding: 5px;
- border-radius: 10px;
-}
 .upload-button {
   position: absolute;
   bottom: 20px;

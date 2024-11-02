@@ -9,11 +9,8 @@
       <LMarker :lat-lng="markerPosition" v-if="markerPosition !== null">
         <LPopup>
           <div class="info-window">
-            <p>{{ infoWindowText }}</p>
-            <div v-if="!locationConfirmed">
-              <button class="yes-button me-2" @click="confirmLocation">Yes</button>
-              <button class="no-button ms-2" @click="cancelLocation">No</button>
-            </div>
+            <p>Your selected location:</p>
+            <p>Latitude: {{ markerPosition.lat }}, Longitude: {{ markerPosition.lng }}</p>
           </div>
         </LPopup>
       </LMarker>
@@ -50,7 +47,6 @@ export default {
     const searchQuery = ref('');
     const markerPosition = ref(null);
     const locationConfirmed = ref(false);
-    const infoWindowText = ref('');
 
     const isFlag = computed(() => store.getters.getFlag);
 
@@ -64,7 +60,6 @@ export default {
       searchQuery.value = '';
       markerPosition.value = null;
       locationConfirmed.value = false;
-      infoWindowText.value = '';
     };
 
     const searchLocation = async () => {
@@ -80,23 +75,11 @@ export default {
     };
 
     const handleMapClick = (event) => {
-      if (!locationConfirmed.value) {
-        markerPosition.value = event.latlng;
-        infoWindowText.value = 'Is this your location?';
-      }
-    };
-
-    const confirmLocation = () => {
-      infoWindowText.value = `Your location: Latitude ${markerPosition.value.lat}, Longitude ${markerPosition.value.lng}`;
+      markerPosition.value = event.latlng;
       locationConfirmed.value = true;
-      sessionStorage.setItem("location", JSON.stringify({ "lat": markerPosition.value.lat, "long": markerPosition.value.lng }));
-      store.commit('setLatitude', markerPosition.value.lat);
-      store.commit('setLongitude', markerPosition.value.lng);
-    };
-
-    const cancelLocation = () => {
-      markerPosition.value = null;
-      infoWindowText.value = '';
+      sessionStorage.setItem("location", JSON.stringify({ "lat": event.latlng.lat, "long": event.latlng.lng }));
+      store.commit('setLatitude', event.latlng.lat);
+      store.commit('setLongitude', event.latlng.lng);
     };
 
     const handle = () => {
@@ -116,16 +99,12 @@ export default {
       searchLocation,
       markerPosition,
       handleMapClick,
-      confirmLocation,
-      cancelLocation,
-      infoWindowText,
       locationConfirmed,
       handle
     };
   }
 };
 </script>
-
 
 <style>
 .autocomplete-list {
@@ -146,8 +125,8 @@ export default {
 
 .autocomplete-list li:hover {
   background-color: #e9e9e9;
-  
 }
+
 #map-container {
   height: 100vh;
   width: 100vw;
@@ -185,36 +164,6 @@ export default {
   text-align: center;
 }
 
-.info-window p {
-  margin-bottom: 10px;
-}
-.no-button
-.yes-button
-.info-window button {
-  margin: 5px;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  
-  border: 1px solid gray;
-}
-
-/* .info-window button:hover {
-  background-color: #f0f0f0;
-} */
-.yes-button:hover{
- background-color: blue;
- color: white;
- padding: 5px;
- border-radius: 10px;
-}
-.no-button:hover{
- background-color: red;
- color: white;
- padding: 5px;
- border-radius: 10px;
-}
 .upload-button {
   position: absolute;
   bottom: 20px;

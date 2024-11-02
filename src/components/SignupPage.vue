@@ -1,9 +1,8 @@
 <template>
   <div class="background">
     <div class="logo-container">
-      <!-- Direct link to the homepage -->
       <a href="/">
-        <img :src="logo" alt="Home" class="logo-image">
+        <img :src="logo" alt="Home" class="logoimage">
       </a>
     </div>
     <div class="content">
@@ -15,13 +14,16 @@
         </p>
       </div>
       <div class="container">
-        <v-card class="mx-auto mt-4 ml-3 mr-3 text-center custom-card" max-width="450" title="User Registration">
+        <v-card class="mx-auto mt-4 ml-3 mr-3 text-center custom-card" max-width="450" style="color: white; padding: 10px; border-radius: 8px 8px 0 0; font-weight: bold;">
+          <div class="headline registration-title">
+            <h3> User Registration</h3>
+          </div>
           <v-form ref="form" v-model="formValid" @submit.prevent="validateForm">
             <keep-alive>
               <v-container>
-                <v-text-field
+                <v-text-field 
                   v-model="first"
-                  color="black"
+                  color="white"
                   label="Name"
                   placeholder="Enter your Name"
                   class="ms-2 me-2"
@@ -32,9 +34,9 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="email"
-                  color="black"
+                  color="white"
                   label="Email"
-                  placeholder="Enter your emailId"
+                  placeholder="Enter your email Id"
                   class="ms-2 me-2"
                   prepend-inner-icon="mdi-email-outline"
                   variant="outlined"
@@ -43,7 +45,7 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="password"
-                  color="black"
+                  color="white"
                   label="Password"
                   class="ms-2 me-2"
                   placeholder="Create your password"
@@ -54,48 +56,34 @@
                   @click:append-inner="visible = !visible"
                   required
                 ></v-text-field>
-                <div class="checkbox-container">
-                  <v-checkbox v-model="terms" color="secondary" :rules="termsRules">
-                    <template v-slot:label>
-                      <span>I agree to <a href="#" @click.prevent="showTerms" class="view-more">terms of use</a></span>
-                    </template>
-                  </v-checkbox>
-                  <v-messages v-if="!terms && showTermsError" color="red" class="error-messages">
-                    {{ termsError }}
-                  </v-messages>
-                </div>
               </v-container>
             </keep-alive>
-            <v-divider></v-divider>
+
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn type="submit" class="btn" color="success" :disabled="registrationInProgress">
-                Complete Registration
-                <v-icon icon="mdi-chevron-right" end></v-icon>
+              <v-btn type="submit" class="btn"  :disabled="registrationInProgress">
+                Register
+               
               </v-btn>
             </v-card-actions>
             <v-card-text class="login-container">
-              <p class="text-black exist-acc">Already have an account? <router-link to="/login-page" class="login-link-text">Login here</router-link></p>
+              <p class="exist-acc">Already have an account? <router-link to="/login-page" class="login-here">Login here</router-link></p>
             </v-card-text>
           </v-form>
         </v-card>
       </div>
     </div>
-    <v-dialog v-model="termsDialog" max-width="700px">
-      <v-card>
-        <v-card-title class="headline">Terms and Conditions</v-card-title>
+    <!-- Success Dialog -->
+    <v-dialog v-model="successDialog" max-width="600px" persistent>
+      <v-card class="success-card">
+        <v-card-title class="headline success-title" align="center">Registration Successful</v-card-title>
         <v-card-text>
-          <ol class="terms">
-            <li>By accessing and using this website, you agree to comply with and be bound by these terms and conditions. If you do not agree, please do not use our site.</li>
-            <li>All content provided on this website, including text, images, and other materials, is for informational purposes only. You may not reproduce, distribute, or use any content without our explicit permission.</li>
-            <li>You agree to use this website only for lawful purposes and in a way that does not infringe the rights of others or restrict or inhibit their use and enjoyment of the site. Prohibited behavior includes harassing or causing distress or inconvenience to any other user.</li>
-            <li>By using our site, you agree to the collection and use of information as described in the privacy policy.</li>
-            <li>We are not liable for any direct, indirect, incidental, or consequential damages arising out of your use of, or inability to use, this website. This includes any errors or omissions in the content provided.</li>
-          </ol>
+          <v-icon large class="success-icon">mdi-check-circle-outline</v-icon>
+          <p class="success-message">Congratulations! Your registration was successful. You can now log in with your new account.</p>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="success-actions">
           <v-spacer></v-spacer>
-          <v-btn class="success" @click="agreeTerms">I Agree</v-btn>
+          <v-btn color="primary" @click="closeSuccessDialog">OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -108,103 +96,120 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      logo: require('@/assets/earth.png'), // Use require to load the image
+      logo: require('@/assets/homewhite.png'),
       first: null,
       email: null,
       password: null,
-      terms: false,
       formValid: false,
       visible: false,
-      termsDialog: false,
-      termsError: "You must agree to the terms and conditions",
-      showTermsError: false,
-      registrationInProgress: false, // New property to track registration status
+      successDialog: false,
+      registrationInProgress: false,
     };
   },
   methods: {
     async validateForm() {
-      this.showTermsError = !this.terms; // Show error if terms not checked
-
-      if (!this.terms) {
-        this.$refs.form.validate();
-        return;
-      }
-
-      this.registrationInProgress = true; // Disable the button after form submission
+      this.registrationInProgress = true;
 
       try {
         if (await this.$refs.form.validate()) {
-          console.log("going to backend");
-          const response = await axios.post('http://192.168.1.6:8080/UserReg/reg', {
-            "name": this.first,
-            "email": this.email,
-            "password": this.password
+          const response = await axios.post('http://192.168.1.31:8080/UserReg/reg', {
+            name: this.first,
+            email: this.email,
+            password: this.password,
           });
 
-          if ((response.status === 200) || (response.status < 300)) {
-            console.log(response.data);
-            this.$router.push('/login-page');
+          if (response.status === 200 || response.status < 300) {
+            this.successDialog = true;
           }
         }
       } catch (error) {
         console.error('Error fetching user details:', error);
         alert('Error fetching user details: ' + error.message);
       } finally {
-        this.registrationInProgress = false; // Re-enable the button if an error occurs
+        this.registrationInProgress = false;
       }
     },
-    showTerms() {
-      this.termsDialog = true;
-    },
-    agreeTerms() {
-      this.terms = true;
-      this.termsDialog = false;
+    closeSuccessDialog() {
+      this.successDialog = false;
+      this.$router.push('/login-page');
     }
   },
   computed: {
     nameRules() {
       return [
         (v) => !!v || "Name is required",
-        (v) => (v && v.length >= 3) || "Name must be at least 3 characters long"
+        (v) => (v && v.length >= 3) || "Name must be at least 3 characters long",
       ];
     },
     emailRules() {
       return [
         (v) => !!v || "Email is required",
-        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ];
     },
     passwordRules() {
       return [
         (v) => !!v || "Password is required",
-        (v) => (v && v.length >= 8) || "Password must be at least 8 characters long"
+        (v) => (v && v.length >= 8) || "Password must be at least 8 characters long",
       ];
     },
-    termsRules() {
-      return [
-        (v) => !!v || "You must agree to the terms and conditions"
-      ];
-    }
-  }
+  },
 };
 </script>
 
+
 <style>
+.login-here{
+  color: white;
+  text-decoration: underline;
+  
+}
 .custom-card {
-  box-shadow: 0 6px 13px rgba(0, 0, 0, 0.3);
-  width: 100%;
+  background-color: #3d523f;
+  
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   border-radius: 16px;
+  
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
 }
-.btn:hover {
-  background-color: rgb(192, 242, 176);
-  color: black !important;
+
+
+
+.custom-card .v-card-title {
+  background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
 }
+
+.custom-card .v-card-actions {
+  border-top: 1px solid #ddd;
+}
+
+.btn {
+  border: 2px solid white;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  padding-bottom: 30px;
+  margin-right: 45px;
+}
+.btn:hover{
+  background-color: green;
+  color: white;
+  border:2px solid white;
+}
+
+
+
 .view-more {
-  color: blue;
+  color: white;
   text-decoration: underline;
   cursor: pointer;
-  height: 30px;
 }
+
 .background {
   background-image: url('@/assets/forest3.jpg');
   background-size: cover;
@@ -215,16 +220,22 @@ export default {
   justify-content: center;
   position: relative;
 }
+
 .logo-container {
   position: absolute;
   top: 20px;
   left: 20px;
 }
-.logo-image {
-  width: 100px;
-  height: 55px;
+
+.logoimage {
+  width: 50px;
+  height: 35px;
   margin-right: 10px;
+  border: 2px white solid;
+  padding: 5px;
+  border-radius: 5px;
 }
+
 .content {
   display: flex;
   justify-content: space-between;
@@ -233,65 +244,64 @@ export default {
   padding: 20px;
   margin-right: 40px;
 }
+
 .quote {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   width: 50%;
-}
-p {
-  color: #f0f8ff;
+  color: white;
   font-size: 20px;
-  text-align: left;
-  margin-left: 60px;
+  margin-top: 15px;
 }
-b {
-  margin-left: 240px;
-}
+
 .container {
   display: flex;
-  justify-content: flex-end;
-  width: 600px;
-  margin-left: 400px;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
 }
-.terms {
-  margin: 0;
-  padding: 0;
-  list-style-type: decimal;
-  padding: 20px;
-}
-.terms li {
-  margin-bottom: 15px;
-  padding-left: 10px;
-  margin-left: 20px;
-}
-.success {
-  color: green;
-}
-.success:hover {
-  color: white;
-  background-color: rgb(63, 132, 63);
-}
-.error-messages {
-  font-size: 12px;
-  margin-top: 5px;
-}
+
 .checkbox-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10px 0;
+  align-items: center;
+  margin-left: 10px;
 }
-.login-link {
+
+.success-card {
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  background-color: #f9f9f9;
+}
+
+.success-title {
+  background-color: green;
+  padding-top: 20px !important;
+  font-weight: bold;
+  font-size: 24px;
+  color: beige;
+}
+
+.success-icon {
+  color: #4caf50;
+  font-size: 46px !important;
+  display: block;
+  margin-left: 250px !important; /* Centers the icon horizontally */
+}
+
+.success-message {
+  text-align: center;
+  font-size: 17px;
+  margin: 20px 0;
+  color: #333;
+}
+.registration-title {
+  background-color: #3d523f!important;
+ 
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  font-weight: bold;
   text-align: center;
 }
-.login-link-text {
-  color: blue;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: medium;
-}
-.exist-acc{
-  font-size: medium;
-}
+
 </style>

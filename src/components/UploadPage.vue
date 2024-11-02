@@ -164,7 +164,7 @@ async function validateAndSubmit() {
       formData.append('district', state.select);
       formData.append('imageFile', state.image);
 
-      const response = await axios.post('http://192.168.1.6:8080/GreenGuard/save', formData);
+      const response = await axios.post('http://192.168.1.31:8080/GreenGuard/save', formData);
 
       if (response.status >= 200 || response.status < 300) {
         console.log('Response:', response.data);

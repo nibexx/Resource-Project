@@ -27,9 +27,9 @@
       <a @click="toDisplay">Explore Resources</a>
     </div>
     <ul class="social">
-      <li><a href="https://www.instagram.com/"><img src="https://i.ibb.co/x7P24fL/facebook.png"></a></li>
-      <li><a href="#"><img src="https://i.ibb.co/Wnxq2Nq/twitter.png"></a></li>
-      <li><a href="#"><img src="https://i.ibb.co/ySwtH4B/instagram.png"></a></li>
+      <li><a href="https://www.facebook.com/login/"><img src="https://i.ibb.co/x7P24fL/facebook.png"></a></li>
+      <li><a href="https://twitter.com/?lang=en"><img src="https://i.ibb.co/Wnxq2Nq/twitter.png"></a></li>
+      <li><a href="https://www.instagram.com/"><img src="https://i.ibb.co/ySwtH4B/instagram.png"></a></li>
     </ul>
   </section>
 </template>
@@ -54,7 +54,7 @@ export default {
       this.isActive = !this.isActive;
     },
     toDisplay() {
-      this.$router.push("/dummy");
+      this.$router.push("/explore");
     }
   }
 };
@@ -90,7 +90,7 @@ header {
 
 .logo-image {
   width: 100px;
-  height: 55;
+  height: 55px;
   margin-right: 10px;
 }
 

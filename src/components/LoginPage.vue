@@ -16,10 +16,11 @@
           max-width="448"
           rounded="lg"
         >
-          <h4 class="text-center mb-4">Login Form</h4>
-          <div class="text-subtitle-1 text-medium-emphasis">Email</div>
+          <h4 class="text-center mb-4 text-white">Login Form</h4>
+          <div class="text-subtitle-1 text-medium-emphasis text-white">Email</div>
 
           <v-text-field
+            
             v-model="email"
             density="compact"
             placeholder="Email address"
@@ -29,7 +30,7 @@
             class="input-field"
           ></v-text-field>
 
-          <div class="text-subtitle-1 text-medium-emphasis password-label">
+          <div class="text-subtitle-1 text-medium-emphasis password-label text-white">
             Password
           </div>
 
@@ -44,22 +45,24 @@
             :error-messages="passwordErrors"
             @click:append-inner="visible = !visible"
             class="input-field"
+             
           ></v-text-field>
 
           <v-btn
             class="mb-8 custom-button"
+            :disabled="isLoggingIn"
             color="light-green"
             size="large"
             variant="tonal"
             block
             @click="validateForm"
           >
-            Log In
+            {{ isLoggingIn ? 'Logging In...' : 'Log In' }}
           </v-btn>
 
           <v-card-text class="text-center">
             <a
-              class="text-green text-decoration-none signup-link"
+              class="text-white text-decoration-none signup-link"
               @click="toSign"
               rel="noopener noreferrer"
               target="_blank"
@@ -83,6 +86,7 @@ export default {
       visible: false,
       emailErrors: [],
       passwordErrors: [],
+      isLoggingIn: false, // New state for button disabling
     };
   },
   methods: {
@@ -101,9 +105,10 @@ export default {
       }
 
       if (!this.emailErrors.length && !this.passwordErrors.length) {
+        this.isLoggingIn = true; // Disable the button
         console.log('Form is valid! Submitting...');
         try {
-          const response = await axios.post('http://192.168.1.6:8080/UserReg/login', {
+          const response = await axios.post('http://192.168.1.31:8080/UserReg/login', {
             email: this.email,
             password: this.password,
           });
@@ -113,14 +118,16 @@ export default {
             console.log('Success');
             sessionStorage.setItem('user', JSON.stringify(response.data));
             this.$store.commit('setUserData', response.data);
-            this.$store.commit('setId', response.data.id);
-            this.$store.commit('setName', response.data.name);
-            this.$store.commit('setEmail', response.data.email);
+            // this.$store.commit('setId', response.data.id);
+            // this.$store.commit('setName', response.data.name);
+            // this.$store.commit('setEmail', response.data.email);
             this.$router.push('/profile-page');
           }
         } catch (error) {
           console.error(error);
           alert('Invalid UserName or Password');
+        } finally {
+          this.isLoggingIn = false; // Re-enable the button
         }
       }
     },
@@ -132,11 +139,14 @@ export default {
 </script>
 
 <style>
+ .text-white{
+  color: white;
+ }
 .signup-link {
   cursor: pointer;
 }
 .custom-button {
-  background-color: #008000; /* Light green color */
+  background-color: darkgreen; /* Light green color */
   color: white !important; /* Text color */
   margin-top: 30px;
   width: 100px; /* Adjusted to a fixed width */
@@ -145,6 +155,7 @@ export default {
 .input-field {
   width: 382px; /* Matches the width of the button */
   margin-top: 10px; /* Space above the password input field */
+  color: white !important; 
 }
 
 .background {
@@ -189,6 +200,7 @@ b {
   width: 100%;
   max-width: 448px;
   padding: 16px; /* Added padding for consistent spacing */
+  background-color: #3d523f;
 }
 
 .password-label {
@@ -212,4 +224,5 @@ b {
     margin-right: 0;
   }
 }
+
 </style>

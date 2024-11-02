@@ -148,7 +148,12 @@ const routes = [
     path: '/card-view',
     component: () => import('./components/ProfileCardView.vue')
   },
-  
+  {
+    path: '/explore',
+ 
+        component: () => import('./components/ExplorePage.vue'),
+
+  },
   
 
 ];
